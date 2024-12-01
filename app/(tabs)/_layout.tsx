@@ -5,8 +5,7 @@ import { Tabs } from "expo-router";
 import { usePathname } from "expo-router";
 
 import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useColorScheme } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -25,7 +24,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: useClientOnlyValue(false, true),
       }}
       tabBar={(props) =>
         pathname === "/addSex" ? null : <TabBar {...props} />
