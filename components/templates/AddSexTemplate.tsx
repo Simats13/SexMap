@@ -9,20 +9,25 @@ import { DateTimePickerModal } from "../organisms/DateTimePickerModal";
 import { VisibilityPickerModal } from "../organisms/VisibilityPickerModal";
 import { RatingBar } from "../atoms/RatingBar";
 import { LocationPicker } from "../molecules/LocationPicker";
+import { useState } from "react";
 
 export interface AddSexTemplateProps {
   user: User | null;
-  date: Date;
-  showDatePicker: boolean;
-  showVisibilityPicker: boolean;
-  selectedVisibility: string;
-  onDateChange: (date: Date) => void;
-  onVisibilityChange: (visibility: string) => void;
-  onToggleDatePicker: (show: boolean) => void;
-  onToggleVisibilityPicker: (show: boolean) => void;
-  rating: number;
-  onRatingChange: (rating: number) => void;
-  onLocationChange: (location: { latitude: number; longitude: number }) => void;
+  loading?: boolean;
+  error?: string | null;
+  onSubmit: (data: {
+    date: Date;
+    description?: string;
+    location: {
+      latitude: number;
+      longitude: number;
+    };
+    locationName?: string;
+    rating?: number;
+    visibility: 'public' | 'private' | 'friends';
+    partners?: string[];
+    anonym?: boolean;
+  }) => void;
 }
 
 const formatDateTime = (date: Date) => {
@@ -35,20 +40,30 @@ const formatDateTime = (date: Date) => {
   });
 };
 
-export const AddSexTemplate = ({
-  user,
-  date,
-  showDatePicker,
-  showVisibilityPicker,
-  selectedVisibility,
-  onDateChange,
-  onVisibilityChange,
-  onToggleDatePicker,
-  onToggleVisibilityPicker,
-  rating,
-  onRatingChange,
-  onLocationChange,
-}: AddSexTemplateProps) => {
+export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplateProps) => {
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [selectedVisibility, setSelectedVisibility] = useState<'public' | 'private' | 'friends'>('public');
+  const [rating, setRating] = useState(0);
+  const [location, setLocation] = useState<{ latitude: number; longitude: number }>({
+    latitude: 48.866667,
+    longitude: 2.333333
+  });
+  const [description, setDescription] = useState('');
+  const [anonym, setAnonym] = useState(false);
+
+  const handleSubmit = () => {
+    onSubmit({
+      date,
+      description,
+      location,
+      rating,
+      visibility: selectedVisibility,
+      anonym,
+    });
+  };
+
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1">
@@ -59,7 +74,7 @@ export const AddSexTemplate = ({
               <Text className="text-gray-700 mb-2">
                 Sélectionne le lieu précis de tes ébats :
               </Text>
-              <LocationPicker onLocationChange={onLocationChange} />
+              <LocationPicker onLocationChange={setLocation} />
             </View>
 
             <Text className="text-lg mb-6 text-gray-800">
@@ -89,7 +104,7 @@ export const AddSexTemplate = ({
             )}
 
             <DatePickerButton
-              onPress={() => onToggleDatePicker(true)}
+              onPress={() => setShowDatePicker(true)}
               value={formatDateTime(date)}
               placeholder="Sélectionner la date et l'heure"
             />
@@ -106,7 +121,7 @@ export const AddSexTemplate = ({
                       : "Privé"
                   }
                   icon="chevron-down"
-                  onPress={() => onToggleVisibilityPicker(true)}
+                  onPress={() => setShowPicker(true)}
                 />
               </View>
             )}
@@ -117,6 +132,8 @@ export const AddSexTemplate = ({
               placeholder="Raconter une anecdotre croustillante, comment ça s'est passé, quel était l'état dans lequel vous étiez..."
               className="h-32"
               textAlignVertical="top"
+              value={description}
+              onChangeText={setDescription}
             />
 
             {user && (
@@ -134,36 +151,42 @@ export const AddSexTemplate = ({
 
             <View className="mb-8 mt-5">
               <Text className="text-gray-700 mb-2">Note ton expérience</Text>
-              <RatingBar rating={rating} onRatingChange={onRatingChange} />
+              <RatingBar rating={rating} onRatingChange={setRating} />
             </View>
 
             <Button
-              title="Envoyer mon SexPin"
-              icon="map-pin"
-              onPress={() => {}}
-              className="mt-8"
+              title="Ajouter"
+              onPress={handleSubmit}
+              loading={loading}
+              className="mt-4"
             />
+
+            {error && (
+              <Text className="text-red-500 text-center mt-2">
+                {error}
+              </Text>
+            )}
           </View>
         </ScrollView>
       </View>
 
       <DateTimePickerModal
         isVisible={showDatePicker}
-        onClose={() => onToggleDatePicker(false)}
+        onClose={() => setShowDatePicker(false)}
         date={date}
         onConfirm={(newDate) => {
-          onDateChange(newDate);
-          onToggleDatePicker(false);
+          setDate(newDate);
+          setShowDatePicker(false);
         }}
       />
 
       <VisibilityPickerModal
-        isVisible={showVisibilityPicker}
-        onClose={() => onToggleVisibilityPicker(false)}
+        isVisible={showPicker}
+        onClose={() => setShowPicker(false)}
         selectedValue={selectedVisibility}
         onConfirm={(value) => {
-          onVisibilityChange(value);
-          onToggleVisibilityPicker(false);
+          setSelectedVisibility(value as 'public' | 'private' | 'friends');
+          setShowPicker(false);
         }}
       />
     </View>

@@ -5,8 +5,8 @@ import { useState } from "react";
 export interface VisibilityPickerModalProps {
   isVisible: boolean;
   onClose: () => void;
-  selectedValue: string;
-  onConfirm: (value: string) => void;
+  selectedValue: 'public' | 'private' | 'friends';
+  onConfirm: (value: 'public' | 'private' | 'friends') => void;
 }
 
 export const VisibilityPickerModal = ({

@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useDeviceId } from '@/hooks/useDeviceId';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,6 +12,12 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
+  const { loading: deviceIdLoading } = useDeviceId();
+
+  if (deviceIdLoading) {
+    return null;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Stack>
@@ -25,6 +32,14 @@ export default function RootLayout() {
         />
         <Stack.Screen
           name="modals/auth"
+          options={{
+            presentation: "modal",
+            headerShown: false,
+            animation: "slide_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="modals/showSex"
           options={{
             presentation: "modal",
             headerShown: false,

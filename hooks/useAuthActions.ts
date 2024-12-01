@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { auth } from "@/config/firebase";
+import { db } from "@/config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -8,6 +9,8 @@ import {
   signOut as firebaseSignOut,
 } from "firebase/auth";
 import { useRouter } from "expo-router";
+import { doc, setDoc } from "firebase/firestore";
+import { useDeviceId } from "./useDeviceId";
 
 interface AuthForm {
   username?: string;
@@ -20,6 +23,7 @@ export const useAuthActions = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { deviceId } = useDeviceId();
 
   const validateSignUp = async (form: AuthForm) => {
     if (form.password !== form.confirmPassword) {
@@ -85,20 +89,29 @@ export const useAuthActions = () => {
       setLoading(true);
       setError(null);
 
-      // Validation du formulaire
+      if (!deviceId) {
+        throw new Error("Device ID not initialized");
+      }
+
       await validateSignUp({ username, email, password, confirmPassword });
 
-      // Création du compte
-      const { user } = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(user, { 
+        displayName: username
+      });
 
-      // Mise à jour du profil avec le nom d'utilisateur
-      if (username) {
-        await updateProfile(user, { displayName: username });
-      }
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        created_time: new Date(),
+        display_name: username,
+        email: email,
+        friendsList: [],
+        friendsPending: [],
+        friendsRequest: [],
+        linkId: deviceId,
+        locationsList: [],
+        partners: [],
+      });
 
       router.back();
     } catch (error: any) {
