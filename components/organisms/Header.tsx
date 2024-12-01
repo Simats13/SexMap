@@ -2,17 +2,22 @@ import { View, TouchableOpacity, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-export const Header = ({ title }: { title: string }) => {
+interface HeaderProps {
+  title: string;
+  onClose?: () => void;
+}
+
+export const Header = ({ title, onClose }: HeaderProps) => {
   const router = useRouter();
   
   return (
-    <View className="bg-red-600 p-4">
-      <View className="flex-row items-center">
-        <TouchableOpacity onPress={() => router.back()}>
-          <Feather name="chevron-left" size={24} color="white" />
+    <View className="p-4 border-b border-gray-200 flex-row justify-between items-center">
+      <Text className="text-lg font-semibold">{title}</Text>
+      {onClose && (
+        <TouchableOpacity onPress={onClose}>
+          <Feather name="x" size={24} color="#666" />
         </TouchableOpacity>
-        <Text className="text-white text-xl ml-4">{title}</Text>
-      </View>
+      )}
     </View>
   );
 }; 

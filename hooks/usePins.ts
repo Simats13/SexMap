@@ -1,12 +1,19 @@
 import {
   collection,
-  onSnapshot,
+  getDocs,
   GeoPoint,
   query,
   where,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/config/firebase";
-import { useEffect, useState } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { useAuth } from "./useAuth";
+import { useQueryClient } from "@tanstack/react-query";
+import { useDeviceId } from "./useDeviceId";
+
+export type FilterType = "public" | "friends" | "private";
 
 export interface MapRegion {
   latitude: number;
@@ -18,51 +25,108 @@ export interface MapRegion {
 export interface Pin {
   id: string;
   title?: string;
-  location: GeoPoint;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
   description?: string;
   rating?: number;
   createdAt: Date;
   userId?: string;
+  visibility: "public" | "private" | "friends";
+}
+
+interface FirestoreDoc {
+  id: string;
+  title?: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  description?: string;
+  rating?: number;
+  createdAt: { toDate: () => Date };
+  userId?: string;
+  visibility: "public" | "private" | "friends";
 }
 
 const RADIUS = 0.2;
 
-export const usePins = (region?: MapRegion) => {
-  const [pins, setPins] = useState<Pin[]>([]);
+export const usePins = (region?: MapRegion, filter: FilterType = "public") => {
+  const [visiblePins, setVisiblePins] = useState<Pin[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { data: user } = useAuth();
+  const { deviceId } = useDeviceId();
 
+  // Chargement initial des pins publics
   useEffect(() => {
-    if (!region) return;
+    if (region) {
+      fetchPinsInArea(region);
+    }
+  }, []); // S'exécute une seule fois au démarrage
 
-    // Requête simple pour récupérer tous les pins et filtrer côté client
-    const unsubscribe = onSnapshot(collection(db, "maps"), (snapshot) => {
-      const newPins = snapshot.docs
-        .map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            location: data.location,
-            description: data.description,
-            rating: data.rating,
-            createdAt: data.createdAt?.toDate(),
-            userId: data.userId,
-          } as Pin;
-        })
-        .filter((pin) => {
-          // Filtre par distance
-          const latDiff = Math.abs(pin.location.latitude - region.latitude);
-          const lonDiff = Math.abs(pin.location.longitude - region.longitude);
-          return latDiff <= RADIUS && lonDiff <= RADIUS;
-        });
+  const fetchPinsInArea = useCallback(
+    async (searchRegion: MapRegion) => {
+      setIsLoading(true);
+      try {
+        const collectionRef = collection(db, "maps");
+        let queryRef = query(collectionRef, where("visibility", "==", "public")); // Par défaut, charge les pins publics
 
-      setPins(newPins);
-    });
+        if (filter === "private" && deviceId) {
+          queryRef = query(
+            queryRef,
+            where("link", "==", deviceId),
+            where("visibility", "==", "private")
+          );
+        } else if (filter === "friends" && user) {
+          if (!user) {
+            throw new Error("User not found");
+          }
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const friendsList = userDoc.data()?.friendsList || [];
 
-    return () => unsubscribe();
-  }, [region]);
+          console.log("friendsList", friendsList);
+
+          queryRef = query(
+            queryRef,
+            where("link", "in", friendsList),
+            where("visibility", "in", ["public", "friends"])
+          );
+        }
+
+        const querySnapshot = await getDocs(queryRef);
+        const pins = querySnapshot.docs
+          .map((doc) => {
+            const data = doc.data() as FirestoreDoc;
+            return {
+              ...data,
+              id: doc.id,
+              createdAt: data.createdAt?.toDate() || new Date(),
+            };
+          })
+          .filter((pin) => {
+            const latDiff = Math.abs(
+              pin.location.latitude - searchRegion.latitude
+            );
+            const lonDiff = Math.abs(
+              pin.location.longitude - searchRegion.longitude
+            );
+            return latDiff <= RADIUS && lonDiff <= RADIUS;
+          });
+
+        setVisiblePins(pins);
+      } catch (error) {
+        console.error("Erreur lors de la recherche:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [filter, user, deviceId]
+  );
 
   return {
-    data: pins,
-    isLoading: false,
+    data: visiblePins,
+    isLoading,
+    searchInArea: (region: MapRegion) => fetchPinsInArea(region),
   };
 };
