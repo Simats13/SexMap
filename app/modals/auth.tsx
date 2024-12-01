@@ -34,10 +34,18 @@ export default function AuthModal() {
     if (isLogin) {
       signIn({ email: form.email, password: form.password });
     } else {
+      if (form.password !== form.confirmPassword) {
+        console.log('Passwords:', { 
+          password: form.password, 
+          confirm: form.confirmPassword 
+        });
+        return;
+      }
       signUp({
         username: form.username,
         email: form.email,
         password: form.password,
+        confirmPassword: form.confirmPassword,
       });
     }
   };

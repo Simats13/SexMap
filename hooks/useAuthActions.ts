@@ -1,16 +1,19 @@
-import { useState } from 'react';
-import { auth } from '@/config/firebase';
+import { useState } from "react";
+import { auth } from "@/config/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-} from 'firebase/auth';
-import { useRouter } from 'expo-router';
+  fetchSignInMethodsForEmail,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
+import { useRouter } from "expo-router";
 
 interface AuthForm {
   username?: string;
   email: string;
   password: string;
+  confirmPassword?: string;
 }
 
 export const useAuthActions = () => {
@@ -18,29 +21,46 @@ export const useAuthActions = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const validateSignUp = async (form: AuthForm) => {
+    if (form.password !== form.confirmPassword) {
+      throw { code: "auth/passwords-not-match" };
+    }
+
+    if (form.password.length < 6) {
+      throw { code: "auth/weak-password" };
+    }
+
+    const methods = await fetchSignInMethodsForEmail(auth, form.email);
+    if (methods.length > 0) {
+      throw { code: "auth/email-already-in-use" };
+    }
+  };
+
   const handleError = (error: any) => {
     setLoading(false);
     switch (error.code) {
-      case 'auth/email-already-in-use':
-        setError('Cette adresse email est déjà utilisée');
+      case "auth/passwords-not-match":
+        setError("Les mots de passe ne correspondent pas");
         break;
-      case 'auth/invalid-email':
-        setError('Adresse email invalide');
+      case "auth/email-already-in-use":
+        setError("Cette adresse email est déjà utilisée");
         break;
-      case 'auth/weak-password':
-        setError('Le mot de passe doit contenir au moins 6 caractères');
+      case "auth/invalid-email":
+        setError("Adresse email invalide");
         break;
-      case 'auth/wrong-password':
-        setError('Email ou mot de passe incorrect');
+      case "auth/weak-password":
+        setError("Le mot de passe doit contenir au moins 6 caractères");
         break;
-      case 'auth/user-not-found':
-        setError('Aucun compte associé à cette adresse email');
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        setError("Email ou mot de passe incorrect");
         break;
-      case 'auth/invalid-credential':
-        setError('Email ou mot de passe incorrect');
+      case "auth/user-not-found":
+        setError("Aucun compte associé à cette adresse email");
         break;
       default:
-        setError('Une erreur est survenue');
+        setError("Une erreur est survenue");
+        console.error(error);
     }
   };
 
@@ -55,17 +75,46 @@ export const useAuthActions = () => {
     }
   };
 
-  const signUp = async ({ username, email, password }: AuthForm) => {
+  const signUp = async ({
+    username,
+    email,
+    password,
+    confirmPassword,
+  }: AuthForm) => {
     try {
       setLoading(true);
       setError(null);
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Validation du formulaire
+      await validateSignUp({ username, email, password, confirmPassword });
+
+      // Création du compte
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      // Mise à jour du profil avec le nom d'utilisateur
       if (username) {
         await updateProfile(user, { displayName: username });
       }
+
       router.back();
     } catch (error: any) {
       handleError(error);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      await firebaseSignOut(auth);
+    } catch (error: any) {
+      handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,8 +123,9 @@ export const useAuthActions = () => {
   return {
     signIn,
     signUp,
+    signOut,
     loading,
     error,
     clearError,
   };
-}; 
+};

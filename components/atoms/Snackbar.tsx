@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Keyboard, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface SnackbarProps {
@@ -7,27 +7,51 @@ interface SnackbarProps {
   visible: boolean;
   onDismiss: () => void;
   type?: 'error' | 'success';
+  keyboardVisible?: boolean;
 }
 
-export const Snackbar = ({ message, visible, onDismiss, type = 'error' }: SnackbarProps) => {
+export const Snackbar = ({ 
+  message, 
+  visible, 
+  onDismiss, 
+  type = 'error',
+  keyboardVisible = false,
+}: SnackbarProps) => {
   const insets = useSafeAreaInsets();
   const opacity = new Animated.Value(0);
+  const translateY = new Animated.Value(100);
 
   useEffect(() => {
     if (visible) {
-      Animated.sequence([
+      Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
           duration: 200,
           useNativeDriver: true,
         }),
-        Animated.delay(3000),
-        Animated.timing(opacity, {
+        Animated.timing(translateY, {
           toValue: 0,
           duration: 200,
           useNativeDriver: true,
         }),
-      ]).start(() => onDismiss());
+      ]).start();
+
+      const timer = setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: 100,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start(() => onDismiss());
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
   }, [visible]);
 
@@ -37,10 +61,12 @@ export const Snackbar = ({ message, visible, onDismiss, type = 'error' }: Snackb
     <Animated.View
       style={{
         opacity,
+        transform: [{ translateY }],
         position: 'absolute',
-        bottom: insets.bottom + 16,
+        bottom: keyboardVisible ? (Platform.OS === 'ios' ? 320 : 0) : insets.bottom + 16,
         left: 16,
         right: 16,
+        zIndex: 1000,
       }}
     >
       <View

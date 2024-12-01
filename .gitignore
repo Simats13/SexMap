@@ -6,3 +6,5 @@ expo-env.d.ts
 # @end expo-cli
 node_modules
 sexmap_env.sh
+.expo
+.expo/*

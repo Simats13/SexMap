@@ -49,7 +49,6 @@ export const AuthTemplate = ({
         onSubmit={onSubmit}
         onToggleMode={onToggleMode}
         loading={loading}
-        error={error}
       />
     </ScrollView>
     <Snackbar
@@ -57,6 +56,7 @@ export const AuthTemplate = ({
       visible={!!error}
       onDismiss={onDismissError}
       type="error"
+      keyboardVisible={keyboardVisible}
     />
   </KeyboardAvoidingView>
 );
