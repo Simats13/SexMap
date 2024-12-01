@@ -2,14 +2,15 @@ import { TouchableOpacity, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 interface ButtonProps {
-  onPress: () => void;
   title: string;
+  onPress: () => void;
   icon?: keyof typeof Feather.glyphMap;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "text";
   className?: string;
+  loading?: boolean;
 }
 
-export const Button = ({ onPress, title, icon, variant = "primary", className = "" }: ButtonProps) => (
+export const Button = ({ onPress, title, icon, variant = "primary", className = "", loading = false }: ButtonProps) => (
   <TouchableOpacity 
     onPress={onPress}
     className={`flex-row items-center justify-center rounded-full py-4 px-6 

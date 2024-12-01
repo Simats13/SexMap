@@ -1,12 +1,30 @@
-import { TextInput, TextInputProps } from "react-native";
+import { TextInput, TextInputProps, View } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
 interface InputProps extends TextInputProps {
-  className?: string;
+  icon?: keyof typeof Feather.glyphMap;
+  onIconPress?: () => void;
 }
 
-export const Input = ({ className = "", ...props }: InputProps) => (
-  <TextInput
-    className={`border border-gray-300 rounded-lg p-4 text-gray-700 ${className}`}
-    {...props}
-  />
+export const Input = ({ icon, onIconPress, ...props }: InputProps) => (
+  <View className="relative">
+    <TextInput
+      className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4 pr-12"
+      placeholderTextColor="#9CA3AF"
+      autoComplete="off"
+      textContentType="none"
+      autoCorrect={false}
+      spellCheck={false}
+      {...props}
+    />
+    {icon && (
+      <TouchableOpacity
+        className="absolute right-4 top-4"
+        onPress={onIconPress}
+      >
+        <Feather name={icon} size={20} color="#666" />
+      </TouchableOpacity>
+    )}
+  </View>
 ); 
