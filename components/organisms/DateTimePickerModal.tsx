@@ -17,6 +17,17 @@ export const DateTimePickerModal = ({
 }: DateTimePickerModalProps) => {
   const [selectedDate, setSelectedDate] = useState(date);
 
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (!newDate) return;
+    
+    const now = new Date();
+    if (newDate > now) {
+      // If date is in future, don't update
+      return;
+    }
+    setSelectedDate(newDate);
+  };
+
   if (Platform.OS === "android") {
     if (!isVisible) return null;
 
@@ -27,10 +38,13 @@ export const DateTimePickerModal = ({
         display="default"
         onChange={(event, date) => {
           if (event.type === "set" && date) {
-            onConfirm(date);
+            if (date <= new Date()) {
+              onConfirm(date);
+            }
           }
           onClose();
         }}
+        maximumDate={new Date()}
       />
     );
   }
@@ -45,8 +59,10 @@ export const DateTimePickerModal = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                onConfirm(selectedDate);
-                onClose();
+                if (selectedDate <= new Date()) {
+                  onConfirm(selectedDate);
+                  onClose();
+                }
               }}
             >
               <Text className="text-blue-500 font-medium">Confirmer</Text>
@@ -56,10 +72,11 @@ export const DateTimePickerModal = ({
             value={selectedDate}
             mode="datetime"
             display="spinner"
-            onChange={(_, date) => date && setSelectedDate(date)}
+            onChange={(_, date) => handleDateChange(date)}
             style={{ height: 200 }}
             textColor="black"
             locale="fr-FR"
+            maximumDate={new Date()}
           />
         </View>
       </View>

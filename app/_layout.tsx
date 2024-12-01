@@ -1,4 +1,14 @@
 import { Stack } from 'expo-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function RootLayout() {
   return (
@@ -13,5 +23,7 @@ export default function RootLayout() {
         }} 
       />
     </Stack>
+    <QueryClientProvider client={queryClient}>
+    </QueryClientProvider>
   );
 }

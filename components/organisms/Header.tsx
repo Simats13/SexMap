@@ -6,7 +6,7 @@ export const Header = ({ title }: { title: string }) => {
   const router = useRouter();
   
   return (
-    <View className="bg-emerald-600 p-4">
+    <View className="bg-red-600 p-4">
       <View className="flex-row items-center">
         <TouchableOpacity onPress={() => router.back()}>
           <Feather name="chevron-left" size={24} color="white" />
