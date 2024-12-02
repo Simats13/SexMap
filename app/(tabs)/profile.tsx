@@ -119,7 +119,7 @@ export default function Profile() {
             <View className="mb-4">
               <Button
                 title="Mes lieux favoris"
-                onPress={() => {}}
+                onPress={() => router.push("/modals/locationsList")}
                 variant="secondary"
                 icon="heart"
               />
