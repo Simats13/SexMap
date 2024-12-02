@@ -18,8 +18,8 @@ export const LocationPicker = ({
   readonly = false 
 }: LocationPickerProps) => {
   const [location, setLocation] = useState<Region>({
-    latitude: 48.866667,
-    longitude: 2.333333,
+    latitude: initialLocation?.latitude || 48.866667,
+    longitude: initialLocation?.longitude || 2.333333,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   });
@@ -32,6 +32,16 @@ export const LocationPicker = ({
   };
 
   useEffect(() => {
+    if (initialLocation) {
+      setLocation({
+        ...location,
+        latitude: initialLocation.latitude,
+        longitude: initialLocation.longitude,
+      });
+      updateLocation(initialLocation);
+      return;
+    }
+
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === "granted") {
@@ -46,7 +56,7 @@ export const LocationPicker = ({
         updateLocation(currentLocation.coords);
       }
     })();
-  }, []);
+  }, [initialLocation]);
 
   return (
     <View className="w-full h-[150px] rounded-lg overflow-hidden">
@@ -66,7 +76,7 @@ export const LocationPicker = ({
             latitude: location.latitude,
             longitude: location.longitude,
           }}
-          draggable
+          draggable={!readonly}
           onDragEnd={(e) => {
             const { latitude, longitude } = e.nativeEvent.coordinate;
             setLocation({

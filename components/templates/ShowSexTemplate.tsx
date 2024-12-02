@@ -49,6 +49,8 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
     getAddress();
   }, [pin.location]);
 
+
+  console.log("pin", pin);
   return (
     <View className="flex-1 bg-white">
       <Header title="Détails du SexPin" />

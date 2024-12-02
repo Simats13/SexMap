@@ -33,6 +33,7 @@ export interface Pin {
   rating?: number;
   createdAt: Date;
   userId?: string;
+  displayName?: string;
   visibility: "public" | "private" | "friends";
 }
 
@@ -73,7 +74,7 @@ export const usePins = (region?: MapRegion, filter: FilterType = "public") => {
         let queryRef = query(
           collectionRef,
           where("visibility", "==", "public")
-        ); // Par défaut, charge les pins publics
+        );
 
         if (filter === "private" && deviceId) {
           queryRef = query(
@@ -81,9 +82,10 @@ export const usePins = (region?: MapRegion, filter: FilterType = "public") => {
             where("link", "==", deviceId),
             where("visibility", "==", "private")
           );
-        } else if (filter === "friends" && user) {
+        } else if (filter === "friends") {
           if (!user) {
-            throw new Error("User not found");
+            console.error("User not found");
+            return;
           }
           const userDoc = await getDoc(doc(db, "users", user.uid));
           const friendsList = userDoc.data()?.friendsList || [];

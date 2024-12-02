@@ -41,13 +41,6 @@ export default function Social() {
       const userDoc = await getDoc(doc(db, "users", user?.uid || ""));
       const friendsList = userDoc.data()?.friendsList || [];
 
-      const friendsLinks = await Promise.all(
-        friendsList.map(async (friendId: string) => {
-          const friendDoc = await getDoc(doc(db, "users", friendId));
-          return friendDoc.data()?.linkId;
-        })
-      );
-
       const personalQuery = query(
         pinsRef,
         where("link", "in", [deviceId, user?.uid || ""]),
@@ -56,7 +49,7 @@ export default function Social() {
 
       const friendsQuery = query(
         pinsRef,
-        where("link", "in", friendsLinks.filter(Boolean)),
+        where("userId", "in", friendsList.filter(Boolean)),
         where("visibility", "in", ["public", "friends"])
       );
 
@@ -152,7 +145,9 @@ export default function Social() {
   );
 
   const handlePinAdded = (newPin: Pin) => {
-    setPins(prev => [...prev, newPin].sort((a, b) => b.date.getTime() - a.date.getTime()));
+    setPins((prev) =>
+      [...prev, newPin].sort((a, b) => b.date.getTime() - a.date.getTime())
+    );
   };
 
   if (!user) {
