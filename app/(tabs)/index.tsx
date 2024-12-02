@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image, Dimensions } from "react-native";
+import { Text, View, TouchableOpacity, Image, Dimensions, Linking, ScrollView } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
@@ -17,6 +17,69 @@ interface Pin {
     longitude: number;
   };
 }
+
+const LocationDisabledView = () => (
+  <ScrollView className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 p-6">
+      <View className="bg-white rounded-2xl p-6 shadow-md">
+        <View className="items-center mb-6">
+          <View className="bg-red-100 w-20 h-20 rounded-full items-center justify-center mb-4">
+            <Feather name="map-pin" size={40} color="#FF1744" />
+          </View>
+          <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
+            Localisation désactivée
+          </Text>
+          <Text className="text-gray-600 text-center mb-4">
+            Active ta position pour découvrir les SexPins près de chez toi et partager tes expériences
+          </Text>
+        </View>
+
+        {/* Aperçu de la carte */}
+        <View className="mb-6">
+          <View className="h-40 bg-gray-100 rounded-lg mb-4 overflow-hidden opacity-50">
+            <View className="absolute inset-0 items-center justify-center">
+              <Feather name="map" size={48} color="#666" />
+            </View>
+          </View>
+
+          {/* Exemples de pins */}
+          <View className="opacity-50">
+            <View className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
+              <View className="flex-1">
+                <Text className="text-gray-800 font-medium mb-1">SexPin à proximité</Text>
+                <View className="flex-row items-center">
+                  <Feather name="map-pin" size={16} color="#666" style={{ marginRight: 4 }} />
+                  <Text className="text-gray-600">500m de chez toi</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View className="opacity-30">
+            <View className="flex-row items-center p-4 bg-gray-50 rounded-lg">
+              <View className="flex-1">
+                <Text className="text-gray-800 font-medium mb-1">Lieu secret</Text>
+                <View className="flex-row items-center">
+                  <Feather name="map-pin" size={16} color="#666" style={{ marginRight: 4 }} />
+                  <Text className="text-gray-600">1km de chez toi</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <TouchableOpacity
+          onPress={() => Linking.openSettings()}
+          className="bg-red-500 py-3 px-6 rounded-full"
+        >
+          <Text className="text-white font-bold text-center">
+            Activer la localisation
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </ScrollView>
+);
 
 export default function Index() {
   const { filter } = useFilter();
@@ -93,7 +156,7 @@ export default function Index() {
     }
   }, [filter]);
 
-  if (isLoading || !userLocation) {
+  if (isLoading) {
     return (
       <View className="flex-1">
         <MotiView
@@ -146,6 +209,10 @@ export default function Index() {
         </View>
       </View>
     );
+  }
+
+  if (!userLocation) {
+    return <LocationDisabledView />;
   }
 
   return (
