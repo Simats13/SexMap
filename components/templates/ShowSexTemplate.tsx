@@ -18,8 +18,9 @@ interface ShowSexTemplateProps {
     createdAt: Date;
     userId: string;
     description?: string;
-    partner?: string;
+    partners?: string[];
     rating?: number;
+    name?: string;
   };
 }
 
@@ -49,22 +50,43 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
     getAddress();
   }, [pin.location]);
 
-
-  console.log("pin", pin);
   return (
     <View className="flex-1 bg-white">
       <Header title="Détails du SexPin" />
       <ScrollView className="flex-1">
         <View className="p-4">
           <View className="mb-8 bg-white rounded-xl shadow-md p-4">
+            <View className="flex-row items-center mb-2">
+              {pin.name && (
+                <Text className="text-lg font-semibold text-gray-800 mb-3">
+                  Le crime a été commis par {pin.name}
+                </Text>
+              )}
+            </View>
             <Text className="text-lg font-semibold text-gray-800 mb-3">
               📍 Localisation
             </Text>
-            {address && (
-              <Text className="text-gray-600 mb-2">{address}</Text>
-            )}
+            {address && <Text className="text-gray-600 mb-2">{address}</Text>}
             <LocationPicker initialLocation={pin.location} readonly />
           </View>
+
+          {pin.partners && (
+            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
+              <View className="flex-row items-center mb-2">
+                <Feather name="users" size={20} color="#4B5563" />
+                <Text className="text-lg font-semibold text-gray-800 ml-2">
+                  Partenaire
+                </Text>
+              </View>
+              <View className="flex-row flex-wrap">
+                {pin.partners.map((partner) => (
+                  <View className="bg-red-100 rounded-full px-3 py-1 m-1 self-start">
+                    <Text className="text-red-600 text-base">{partner}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           <View className="mb-8 bg-white rounded-xl shadow-md p-4">
             <View className="flex-row items-center mb-2">
@@ -77,18 +99,6 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
               {format(pin.createdAt, "PPPp", { locale: fr })}
             </Text>
           </View>
-
-          {pin.partner && (
-            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-              <View className="flex-row items-center mb-2">
-                <Feather name="users" size={20} color="#4B5563" />
-                <Text className="text-lg font-semibold text-gray-800 ml-2">
-                  Partenaire
-                </Text>
-              </View>
-              <Text className="text-gray-600 text-base">{pin.partner}</Text>
-            </View>
-          )}
 
           {pin.description && (
             <View className="mb-8 bg-white rounded-xl shadow-md p-4">

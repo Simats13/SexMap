@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { doc, getDoc } from "firebase/firestore";
@@ -17,6 +16,7 @@ interface Pin {
   description?: string;
   partner?: string;
   rating?: number;
+  name?: string;
 }
 
 export default function ShowSexModal() {
@@ -30,6 +30,13 @@ export default function ShowSexModal() {
       if (!docSnap.exists()) throw new Error("Pin not found");
       const data = docSnap.data();
 
+      const getDisplayName = async (userId: string) => {
+        const userDoc = await getDoc(doc(db, "users", userId));
+        return userDoc.data()?.display_name;
+      };
+
+      const displayName = await getDisplayName(data.userId);
+
       return {
         id: docSnap.id,
         title: data.title,
@@ -37,8 +44,9 @@ export default function ShowSexModal() {
         createdAt: data.date.toDate(),
         userId: data.userId,
         description: data.description,
-        partner: data.partner,
+        partners: data.partners,
         rating: data.rating,
+        name: displayName,
       };
     },
   });
