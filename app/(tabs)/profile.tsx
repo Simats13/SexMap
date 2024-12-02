@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFriends } from "@/hooks/useFriends";
 import { useUserStats } from "@/hooks/useUserStats";
 import { Share } from "react-native";
+import { UserStats } from "@/hooks/useUserStats";
 
 // Ajout des types pour les statistiques
 type StatItemProps = {
@@ -29,13 +30,22 @@ const StatItem = ({ icon, value, label, onPress }: StatItemProps) => (
   </Pressable>
 );
 
+const defaultStats: UserStats = {
+  locations: 0,
+  pins: 0,
+  partners: 0,
+  totalLikes: 0,
+  friends: 0,
+  nightPins: 0,
+  countries: 0,
+  quickPins: 0,
+};
+
 export default function Profile() {
   const { data: user, isLoading } = useAuth();
   const { signOut, loading } = useAuthActions();
   const { data: friends = [] } = useFriends(user?.uid);
-  const { data: stats = { locations: 0, pins: 0, partners: 0 } } = useUserStats(
-    user?.uid
-  );
+  const { data: stats = defaultStats } = useUserStats(user?.uid) || { data: defaultStats };
   const router = useRouter();
 
   const handleShare = async () => {
@@ -88,17 +98,17 @@ export default function Profile() {
               />
               <StatItem
                 icon="location-outline"
-                value={stats.locations}
+                value={stats?.locations || 0}
                 label="Lieux visités"
               />
               <StatItem
                 icon="pin-outline"
-                value={stats.pins}
+                value={stats?.pins || 0}
                 label="Pins créés"
               />
               <StatItem
                 icon="people-circle-outline"
-                value={stats.partners}
+                value={stats?.partners || 0}
                 label="Rencontres"
               />
             </View>

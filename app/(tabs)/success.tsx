@@ -1,11 +1,82 @@
-import { Text, View } from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import { useAuth } from "@/hooks/useAuth";
+import { useAchievements } from "@/hooks/useAchievements";
+import { Ionicons } from "@expo/vector-icons";
+
+const AchievementCard = ({ achievement }: { achievement: any }) => (
+  <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+    <View className="flex-row items-center mb-2">
+      <View 
+        className={`w-12 h-12 rounded-full items-center justify-center ${
+          achievement.unlocked ? 'bg-green-100' : 'bg-gray-100'
+        }`}
+      >
+        <Ionicons 
+          name={achievement.icon} 
+          size={24} 
+          color={achievement.unlocked ? '#22C55E' : '#9CA3AF'} 
+        />
+      </View>
+      <View className="ml-4 flex-1">
+        <Text className="font-bold text-lg text-gray-800">
+          {achievement.title}
+        </Text>
+        <Text className="text-gray-600">{achievement.description}</Text>
+      </View>
+    </View>
+    <View className="bg-gray-200 h-2 rounded-full overflow-hidden">
+      <View 
+        className={`h-full ${
+          achievement.unlocked ? 'bg-green-500' : 'bg-blue-500'
+        }`}
+        style={{ width: `${achievement.progress}%` }}
+      />
+    </View>
+    <Text className="text-right text-sm text-gray-500 mt-1">
+      {Math.round(achievement.progress)}%
+    </Text>
+  </View>
+);
 
 export default function Success() {
+  const { data: user } = useAuth();
+  const { data: achievementsData, isLoading } = useAchievements(user?.uid);
+
+  if (!user) {
+    return (
+      <View className="flex-1 items-center justify-center p-4">
+        <Text className="text-gray-500 text-center">
+          Connecte-toi pour voir tes succès
+        </Text>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text>Chargement...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View>
-      <Text className="text-red-500 text-2xl font-bold text-center">
-        Success
-      </Text>
-    </View>
+    <ScrollView 
+      className="flex-1 bg-gray-50" 
+      contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+    >
+      <View className="mb-6">
+        <Text className="text-2xl font-bold text-gray-800 mb-2">
+          Mes Succès
+        </Text>
+        <Text className="text-gray-600">
+          {achievementsData?.unlockedCount || 0} / {achievementsData?.achievements.length} débloqués
+        </Text>
+      </View>
+
+      {achievementsData?.achievements.map((achievement) => (
+        <AchievementCard key={achievement.id} achievement={achievement} />
+      ))}
+    </ScrollView>
   );
 }

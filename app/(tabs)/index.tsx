@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Image } from "react-native";
+import { Text, View, TouchableOpacity, Image, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
@@ -7,6 +7,7 @@ import { Feather } from "@expo/vector-icons";
 import { usePins, MapRegion, FilterType } from "@/hooks/usePins";
 import { useRouter } from "expo-router";
 import { useFilter } from "@/contexts/FilterContext";
+import { MotiView } from "moti";
 
 interface Pin {
   id: string;
@@ -28,10 +29,7 @@ export default function Index() {
     data: pins,
     isLoading: pinsLoading,
     searchInArea,
-  } = usePins(
-    mapRegion,
-    filter
-  );
+  } = usePins(mapRegion, filter);
   const router = useRouter();
   const [isMapMoved, setIsMapMoved] = useState(false);
 
@@ -97,8 +95,55 @@ export default function Index() {
 
   if (isLoading || !userLocation) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Chargement de la carte...</Text>
+      <View className="flex-1">
+        <MotiView
+          className="w-full h-full bg-gray-200"
+          from={{
+            opacity: 0.5,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            type: "timing",
+            duration: 1000,
+            loop: true,
+          }}
+        />
+
+        <View className="absolute top-4 left-4 right-4">
+          <MotiView
+            className="w-full h-[46px] bg-gray-200 rounded-lg"
+            from={{
+              opacity: 0.5,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              type: "timing",
+              duration: 1000,
+              loop: true,
+            }}
+          />
+        </View>
+
+        <View className="absolute bottom-24 right-4">
+          <MotiView
+            className="w-[50px] h-[50px] bg-gray-200 rounded-full"
+            from={{
+              opacity: 0.5,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            transition={{
+              type: "timing",
+              duration: 1000,
+              loop: true,
+            }}
+          />
+        </View>
       </View>
     );
   }

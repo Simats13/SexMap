@@ -3,6 +3,17 @@ import { useEffect } from "react";
 import * as Linking from "expo-linking";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FilterProvider } from "@/contexts/FilterContext";
+import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
+
+// Configuration des notifications
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,29 +28,30 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    const subscription = Linking.addEventListener("url", ({ url }) => {
-      const parsed = Linking.parse(url);
-      setTimeout(() => {
-        if (parsed.path?.includes("addFriend")) {
-          const username = parsed.path.split("/").pop();
-          router.push({
-            pathname: "/modals/friendsList",
-            params: { userId: username },
-          });
-        }
+    // Configuration des notifications pour iOS
+    if (Platform.OS === "ios") {
+      Notifications.setNotificationCategoryAsync("achievement", [
+        {
+          identifier: "view",
+          buttonTitle: "Voir",
+          options: {
+            opensAppToForeground: true,
+          },
+        },
+      ]);
+    }
 
-        if (parsed.path?.includes("pin")) {
-          const pinId = parsed.path.split("/").pop();
-          router.push({
-            pathname: "/modals/showSex",
-            params: { id: pinId },
-          });
+    // Gestionnaire de réponse aux notifications
+    const responseListener = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        if (response.notification.request.content.data?.type === "achievement") {
+          router.push("/success");
         }
-      }, 100);
-    });
+      }
+    );
 
     return () => {
-      subscription.remove();
+      Notifications.removeNotificationSubscription(responseListener);
     };
   }, []);
 
