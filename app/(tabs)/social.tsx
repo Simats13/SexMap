@@ -25,6 +25,7 @@ interface Pin {
   locationName?: string;
   rating?: number;
   visibility: "public" | "private" | "friends";
+  name?: string;
 }
 
 export default function Social() {
@@ -34,6 +35,11 @@ export default function Social() {
   const { data: user } = useAuth();
   const { deviceId } = useDeviceId();
   const router = useRouter();
+
+  const getDisplayName = async (userId: string) => {
+    const userDoc = await getDoc(doc(db, "users", userId));
+    return userDoc.data()?.display_name;
+  };
 
   const fetchPins = async () => {
     try {
@@ -58,13 +64,18 @@ export default function Social() {
         getDocs(friendsQuery),
       ]);
 
-      const allPins = [...personalSnap.docs, ...friendsSnap.docs].map(
-        (doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          date: doc.data().date.toDate(),
+      const allPins = await Promise.all(
+        [...personalSnap.docs, ...friendsSnap.docs].map(async (doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            date: data.date.toDate(),
+            name: await getDisplayName(data.userId),
+            visibility: data.visibility,
+          } as Pin;
         })
-      ) as Pin[];
+      );
 
       setPins(allPins.sort((a, b) => b.date.getTime() - a.date.getTime()));
     } catch (error) {
@@ -100,12 +111,17 @@ export default function Social() {
     }
   }, [deviceId, user]);
 
+  console.log("pins", pins);
+
   const renderItem = ({ item }: { item: Pin }) => (
     <TouchableOpacity
       className="flex-row items-center p-4 bg-white mb-2 rounded-lg shadow-sm"
       onPress={() => router.push(`/modals/showSex?id=${item.id}`)}
     >
       <View className="flex-1">
+        {item.name && (
+          <Text className="text-gray-800 font-medium mb-1">{item.name}</Text>
+        )}
         <Text className="text-gray-800 font-medium mb-1">
           {format(item.date, "d MMMM yyyy", { locale: fr })}
         </Text>

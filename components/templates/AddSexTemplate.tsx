@@ -47,6 +47,8 @@ interface AddSexTemplateProps {
   setLocationsInput: (value: string) => void;
   partnersFiltered: string[];
   locationsFiltered: string[];
+  isSolo: boolean;
+  setIsSolo: (isSolo: boolean) => void;
 }
 
 const formatDateTime = (date: Date) => {
@@ -63,11 +65,9 @@ export const AddSexTemplate = ({
   user,
   loading,
   error,
-  partners,
   selectedPartners,
   onUpdatePartners,
   onSubmit,
-  locations,
   selectedLocations,
   onUpdateLocations,
   date,
@@ -94,6 +94,8 @@ export const AddSexTemplate = ({
   setLocationsInput,
   partnersFiltered,
   locationsFiltered,
+  isSolo,
+  setIsSolo,
 }: AddSexTemplateProps) => {
   const handleSubmit = () => {
     onSubmit({
@@ -121,20 +123,41 @@ export const AddSexTemplate = ({
               <LocationPicker onLocationChange={setLocation} />
             </View>
 
-            {user ? (
-              <Text className="text-lg mb-6 text-gray-800">
-                Ajoute un(e) partenaire et le lieu de tes ébats
-              </Text>
-            ) : (
-              <TouchableOpacity onPress={onPressAuth}>
-                <Text className="text-lg mb-6 text-blue-500">
-                  Connecte-toi pour ajouter un(e) partenaire et le lieu de tes
-                  ébats
-                </Text>
-              </TouchableOpacity>
-            )}
+            <View className="mb-6">
+              <Text className="text-gray-700 mb-2">Type d'expérience :</Text>
+              <View className="flex-row space-x-4">
+                <TouchableOpacity
+                  onPress={() => setIsSolo(true)}
+                  className={`flex-1 p-4 rounded-lg border ${
+                    isSolo ? "bg-red-50 border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <Text
+                    className={`text-center ${
+                      isSolo ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
+                    Solo ✊
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setIsSolo(false)}
+                  className={`flex-1 p-4 rounded-lg border ${
+                    !isSolo ? "bg-red-50 border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <Text
+                    className={`text-center ${
+                      !isSolo ? "text-red-500" : "text-gray-700"
+                    }`}
+                  >
+                    À plusieurs 🤝🏻
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
-            {user && (
+            {!isSolo && user && (
               <>
                 <Text className="text-gray-700 mb-2">
                   Sélectionne un.e de tes ami.e.s ou saisi son nom :
@@ -160,32 +183,31 @@ export const AddSexTemplate = ({
                   filteredSuggestions={partnersFiltered}
                   icon="account"
                 />
-                <Text className="text-black mb-2">
-                  Sélectionne un de tes lieux favoris ou saisi son nom :
-                </Text>
-                <TagInput
-                  tags={selectedLocations.map((p) => p.value)}
-                  inputValue={locationsInput}
-                  onInputChange={setLocationsInput}
-                  icon="map-marker"
-                  onAddTag={(tag) =>
-                    onUpdateLocations([
-                      ...selectedLocations.map((p) => p.value),
-                      tag,
-                    ])
-                  }
-                  onRemoveTag={(tag) =>
-                    onUpdateLocations(
-                      selectedLocations
-                        .map((p) => p.value)
-                        .filter((t) => t !== tag)
-                    )
-                  }
-                  placeholder="Ajouter un lieu de tes ébats ..."
-                  filteredSuggestions={locationsFiltered}
-                />
               </>
             )}
+
+            <Text className="text-black mb-2">
+              Sélectionne un de tes lieux favoris ou saisi son nom :
+            </Text>
+            <TagInput
+              tags={selectedLocations.map((p) => p.value)}
+              inputValue={locationsInput}
+              onInputChange={setLocationsInput}
+              icon="map-marker"
+              onAddTag={(tag) =>
+                onUpdateLocations([
+                  ...selectedLocations.map((p) => p.value),
+                  tag,
+                ])
+              }
+              onRemoveTag={(tag) =>
+                onUpdateLocations(
+                  selectedLocations.map((p) => p.value).filter((t) => t !== tag)
+                )
+              }
+              placeholder="Ajouter un lieu de tes ébats ..."
+              filteredSuggestions={locationsFiltered}
+            />
 
             <View>
               <Text className="text-gray-700 mb-2">

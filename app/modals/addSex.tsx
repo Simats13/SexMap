@@ -49,6 +49,7 @@ export default function AddSexModal() {
   const [locationsInput, setLocationsInput] = useState("");
   const [partnersFiltered, setPartnersFiltered] = useState<string[]>([]);
   const [locationsFiltered, setLocationsFiltered] = useState<string[]>([]);
+  const [isSolo, setIsSolo] = useState(true);
 
   const router = useRouter();
   const addPin = useAddPin();
@@ -230,6 +231,8 @@ export default function AddSexModal() {
       setLocationsInput={setLocationsInput}
       partnersFiltered={partnersFiltered}
       locationsFiltered={locationsFiltered}
+      isSolo={isSolo}
+      setIsSolo={setIsSolo}
     />
   );
 }
