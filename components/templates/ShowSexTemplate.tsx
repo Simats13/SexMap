@@ -1,12 +1,26 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Header } from "../organisms/Header";
 import { LocationPicker } from "../molecules/LocationPicker";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Feather } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialCommunityIcons,
+  EvilIcons,
+  FontAwesome,
+  Ionicons,
+} from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
+import { Button } from "../atoms/Button";
+import { User } from "firebase/auth";
 
 interface ShowSexTemplateProps {
   pin: {
@@ -22,12 +36,23 @@ interface ShowSexTemplateProps {
     partners?: string[];
     rating?: number;
     name?: string;
+    solo: boolean;
+    like: string[];
   };
+  onShare: () => void;
+  onLike: () => void;
+  user?: User;
 }
 
-export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
+export const ShowSexTemplate = ({
+  pin,
+  onShare,
+  onLike,
+  user,
+}: ShowSexTemplateProps) => {
   const router = useRouter();
   const [address, setAddress] = useState<string>("");
+  const isLiked = user && pin.like ? pin.like.includes(user.uid) : false;
 
   useEffect(() => {
     const getAddress = async () => {
@@ -54,7 +79,24 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
 
   return (
     <View className="flex-1 bg-white">
-      <Header title="Détails du SexPin" onClose={() => router.back()} />
+      <Header
+        title="Détails du SexPin"
+        onClose={() => router.back()}
+        rightElement={
+          <View className="flex-row items-center">
+            <TouchableOpacity className="mr-2" onPress={onShare}>
+              <Feather name="share" size={24} color="#666" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onLike}>
+              <Ionicons
+                name={isLiked ? "heart" : "heart-outline"}
+                size={24}
+                color={isLiked ? "#EF4444" : "#666"}
+              />
+            </TouchableOpacity>
+          </View>
+        }
+      />
       <ScrollView className="flex-1">
         <View className="p-4">
           <View className="mb-8 bg-white rounded-xl shadow-md p-4">
@@ -72,7 +114,15 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
             <LocationPicker initialLocation={pin.location} readonly />
           </View>
 
-          {pin.partners && (
+          {pin.solo && (
+            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
+              <Text className="text-gray-600 mb-2">
+                Cette expérience a été faite en solitaire 🤪
+              </Text>
+            </View>
+          )}
+
+          {pin.partners && !pin.solo && (
             <View className="mb-8 bg-white rounded-xl shadow-md p-4">
               <View className="flex-row items-center mb-2">
                 <Feather name="users" size={20} color="#4B5563" />

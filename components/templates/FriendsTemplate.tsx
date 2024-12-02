@@ -80,7 +80,7 @@ export const FriendsTemplate = ({
             ) : (
               <EmptyState
                 icon="account-group"
-                message="Vous n'avez pas encore d'amis.\nAjoutez des amis pour partager vos expériences !"
+                message="Vous n'avez pas encore d'amis. Ajoutez des amis pour partager vos expériences !"
               />
             )}
           </View>

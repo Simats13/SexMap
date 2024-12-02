@@ -17,6 +17,7 @@ export interface AddPinParams {
   anonym: boolean;
   partners: string[];
   locationName: string;
+  solo: boolean;
 }
 
 interface UserData {
@@ -38,11 +39,6 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
     const userData = userDoc.data() as UserData;
     const friendsList = userData.friendsList || [];
     const senderName = userData.display_name || "Un utilisateur";
-
-    console.log("friendsList", friendsList);
-    console.log("senderName", senderName);
-    console.log("userId", userId);
-    console.log("user.uid", user?.uid);
 
     await sendPushNotification(
       friendsList,
@@ -92,7 +88,7 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
 
       const pinData = user
         ? {
-            // Données pour utilisateur connecté
+            solo: params.solo,
             anonym: params.anonym || false,
             date: params.date,
             description: params.description,

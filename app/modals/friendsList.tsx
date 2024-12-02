@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useState, useEffect } from "react";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useFriendRequests } from "@/hooks/useFriendRequests";
 import { useFriends } from "@/hooks/useFriends";
@@ -22,6 +22,14 @@ export default function FriendsListModal() {
   const { data: pendingSent = [] } = useFriendsPending(user?.uid);
   const { sendPushNotification } = usePushNotification(user?.uid);
   const router = useRouter();
+  const [friendId, setFriendId] = useState("");
+  const params = useLocalSearchParams<{ userId?: string }>();
+
+  useEffect(() => {
+    if (params?.userId) {
+      setFriendId(params.userId);
+    }
+  }, [params?.userId]);
 
   const handleRemoveFriend = async (friendId: string) => {
     if (!user) return;

@@ -49,6 +49,7 @@ interface FirestoreDoc {
   createdAt: { toDate: () => Date };
   userId?: string;
   visibility: "public" | "private" | "friends";
+  solo: boolean;
 }
 
 const RADIUS = 0.2;

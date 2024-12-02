@@ -1,19 +1,8 @@
+import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import * as Linking from "expo-linking";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useDeviceId } from "@/hooks/useDeviceId";
 import { FilterProvider } from "@/contexts/FilterContext";
-import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
-
-// Configuration des notifications
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,73 +13,43 @@ const queryClient = new QueryClient({
   },
 });
 
-// Composant séparé pour la configuration des notifications
-function NotificationSetup() {
+export default function RootLayout() {
+  const router = useRouter();
+
   useEffect(() => {
-    // Configuration des notifications pour iOS
-    if (Platform.OS === "ios") {
-      Notifications.setNotificationCategoryAsync("default", [
-        {
-          identifier: "default",
-          buttonTitle: "Ouvrir",
-        },
-      ]);
-    }
+    const subscription = Linking.addEventListener("url", ({ url }) => {
+      const parsed = Linking.parse(url);
+      setTimeout(() => {
+        if (parsed.path?.includes("addFriend")) {
+          const username = parsed.path.split("/").pop();
+          router.push({
+            pathname: "/modals/friendsList",
+            params: { userId: username },
+          });
+        }
 
-    // Configuration du canal de notification pour Android
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    // Configuration des listeners de notification
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        console.log("Notification reçue:", notification);
-      }
-    );
-
-    const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("Réponse à la notification:", response);
-      });
+        if (parsed.path?.includes("pin")) {
+          const pinId = parsed.path.split("/").pop();
+          router.push({
+            pathname: "/modals/showSex",
+            params: { id: pinId },
+          });
+        }
+      }, 100);
+    });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener);
-      Notifications.removeNotificationSubscription(responseListener);
+      subscription.remove();
     };
   }, []);
-
-  return null;
-}
-
-export default function RootLayout() {
-  const { loading: deviceIdLoading } = useDeviceId();
-
-  if (deviceIdLoading) {
-    return null;
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <FilterProvider>
-        <NotificationSetup />
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
-            name="modals/addSex"
-            options={{
-              presentation: "modal",
-              headerShown: false,
-              animation: "slide_from_bottom",
-            }}
-          />
-          <Stack.Screen
-            name="modals/auth"
+            name="modals/friendsList"
             options={{
               presentation: "modal",
               headerShown: false,
@@ -106,15 +65,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="modals/filters"
-            options={{
-              presentation: "modal",
-              headerShown: false,
-              animation: "slide_from_bottom",
-            }}
-          />
-          <Stack.Screen
-            name="modals/friendsList"
+            name="modals/addSex"
             options={{
               presentation: "modal",
               headerShown: false,

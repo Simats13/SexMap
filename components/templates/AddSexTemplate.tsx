@@ -107,6 +107,7 @@ export const AddSexTemplate = ({
       anonym,
       partners: selectedPartners.map((p) => p.value),
       locationName: selectedLocations.map((p) => p.value).join(", "),
+      solo: isSolo,
     });
   };
 

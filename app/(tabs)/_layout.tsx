@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { Feather } from "@expo/vector-icons";
@@ -14,8 +14,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/useAuth";
 import { useFriendRequests } from "@/hooks/useFriendRequests";
 import { usePushNotification } from "@/hooks/usePushNotification";
-import * as Notifications from 'expo-notifications';
-import { NotificationPermissionModal } from "@/components/molecules/NotificationPermissionModal";
+import * as Notifications from "expo-notifications";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -30,15 +29,31 @@ export default function TabLayout() {
   const pathname = usePathname();
   const { data: user } = useAuth();
   const { expoPushToken } = usePushNotification(user?.uid);
-  const [showPermissionModal, setShowPermissionModal] = useState(false);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
-      if (Platform.OS === 'ios') {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        if (existingStatus === 'granted') return;
-        
-        setShowPermissionModal(true);
+      if (Platform.OS === "ios") {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        if (existingStatus === "granted") return;
+
+        Alert.alert(
+          "Notifications",
+          "Voulez-vous recevoir des notifications quand vos amis ajoutent un pin ?",
+          [
+            {
+              text: "Non merci",
+              style: "cancel",
+            },
+            {
+              text: "Oui",
+              onPress: async () => {
+                await Notifications.requestPermissionsAsync();
+              },
+            },
+          ],
+          { cancelable: true }
+        );
       } else {
         // Pour Android, la demande est gérée automatiquement par le système
         await Notifications.requestPermissionsAsync();
@@ -52,106 +67,94 @@ export default function TabLayout() {
   }, [user, expoPushToken]);
 
   return (
-    <>
-      <NotificationPermissionModal
-        visible={showPermissionModal}
-        onAccept={async () => {
-          await Notifications.requestPermissionsAsync();
-          setShowPermissionModal(false);
-        }}
-        onDecline={() => {
-          setShowPermissionModal(false);
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+      }}
+      tabBar={(props) =>
+        pathname === "/addSex" ? null : <TabBar {...props} />
+      }
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "SexMap",
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerRight: () => {
+            const router = useRouter();
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  !user
+                    ? router.push("/modals/auth")
+                    : router.push("/modals/filters")
+                }
+                className="mr-4"
+              >
+                <MaterialCommunityIcons
+                  name="tune-variant"
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        }}
-        tabBar={(props) =>
-          pathname === "/addSex" ? null : <TabBar {...props} />
-        }
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: "SexMap",
-            tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-            headerRight: () => {
-              const router = useRouter();
-              return (
-                <TouchableOpacity
-                  onPress={() =>
-                    !user
-                      ? router.push("/modals/auth")
-                      : router.push("/modals/filters")
-                  }
-                  className="mr-4"
-                >
+
+      <Tabs.Screen
+        name="social"
+        options={{
+          title: "Actualités",
+          tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
+          headerRight: () => {
+            const router = useRouter();
+            const { data: pendingRequests = [] } = useFriendRequests(user?.uid);
+
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  !user
+                    ? router.push("/modals/auth")
+                    : router.push("/modals/friendsList")
+                }
+                className="mr-4"
+              >
+                <View className="relative">
                   <MaterialCommunityIcons
-                    name="tune-variant"
+                    name="account-multiple"
                     size={24}
                     color="#666"
                   />
-                </TouchableOpacity>
-              );
-            },
-          }}
-        />
+                  {pendingRequests.length > 0 && (
+                    <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                      <Text className="text-white text-xs font-bold">
+                        {pendingRequests.length}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          },
+        }}
+      />
 
-        <Tabs.Screen
-          name="social"
-          options={{
-            title: "Actualités",
-            tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
-            headerRight: () => {
-              const router = useRouter();
-              const { data: pendingRequests = [] } = useFriendRequests(user?.uid);
-              
-              return (
-                <TouchableOpacity
-                  onPress={() =>
-                    !user
-                      ? router.push("/modals/auth")
-                      : router.push("/modals/friendsList")
-                  }
-                  className="mr-4"
-                >
-                  <View className="relative">
-                    <MaterialCommunityIcons
-                      name="account-multiple"
-                      size={24}
-                      color="#666"
-                    />
-                    {pendingRequests.length > 0 && (
-                      <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
-                        <Text className="text-white text-xs font-bold">
-                          {pendingRequests.length}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-              );
-            },
-          }}
-        />
+      <Tabs.Screen
+        name="success"
+        options={{
+          title: "Success",
+          tabBarIcon: ({ color }) => <TabBarIcon name="trophy" color={color} />,
+        }}
+      />
 
-        <Tabs.Screen
-          name="success"
-          options={{
-            title: "Success",
-            tabBarIcon: ({ color }) => <TabBarIcon name="trophy" color={color} />,
-          }}
-        />
-
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-          }}
-        />
-      </Tabs>
-    </>
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }
