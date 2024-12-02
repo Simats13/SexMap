@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/useAuth";
@@ -68,9 +62,7 @@ export default function LocationsList() {
                     <Text className="text-gray-600">{location.address}</Text>
                   )}
                 </View>
-                <TouchableOpacity
-                  onPress={() => deleteLocation(location.id)}
-                >
+                <TouchableOpacity onPress={() => deleteLocation(location.id)}>
                   <Ionicons name="trash-outline" size={20} color="#EF4444" />
                 </TouchableOpacity>
               </View>

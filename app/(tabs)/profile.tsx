@@ -45,7 +45,9 @@ export default function Profile() {
   const { data: user, isLoading } = useAuth();
   const { signOut, loading } = useAuthActions();
   const { data: friends = [] } = useFriends(user?.uid);
-  const { data: stats = defaultStats } = useUserStats(user?.uid) || { data: defaultStats };
+  const { data: stats = defaultStats } = useUserStats(user?.uid) || {
+    data: defaultStats,
+  };
   const router = useRouter();
 
   const handleShare = async () => {
@@ -65,6 +67,56 @@ export default function Profile() {
       <View className="flex-1 items-center justify-center">
         <Text>Chargement...</Text>
       </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <ScrollView className="flex-1 bg-gray-50">
+        <View className="flex-1 p-6">
+          {/* En-tête attractif */}
+          <View className="items-center mb-8">
+            <Ionicons name="map" size={80} color="#4B5563" />
+            <Text className="text-2xl font-bold text-center mt-4 text-gray-800">
+              Découvre SexMap
+            </Text>
+            <Text className="text-gray-600 text-center mt-2 mb-6">
+              Rejoins la communauté et partage tes expériences en toute
+              discrétion
+            </Text>
+          </View>
+
+          {/* Avantages de l'inscription */}
+          <View className="mb-8">
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
+              <Text className="ml-3 text-gray-700">
+                Crée et découvre des lieux uniques
+              </Text>
+            </View>
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
+              <Text className="ml-3 text-gray-700">
+                Connecte-toi avec d'autres membres
+              </Text>
+            </View>
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
+              <Text className="ml-3 text-gray-700">
+                Garde une trace de tes aventures
+              </Text>
+            </View>
+          </View>
+
+          {/* Boutons d'action */}
+          <View className="space-y-4">
+            <Button
+              title="Se connecter"
+              onPress={() => router.push("/modals/auth")}
+            />
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 

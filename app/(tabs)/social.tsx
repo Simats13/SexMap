@@ -173,13 +173,44 @@ export default function Social() {
 
   if (!user) {
     return (
-      <View className="flex-1 items-center justify-center p-4">
-        <Text className="text-gray-500 text-center mb-4">
-          Connecte-toi pour voir les SexPins de tes amis
-        </Text>
+      <View className="flex-1 bg-gray-50 p-6">
+        <View className="items-center mb-8">
+          <MaterialCommunityIcons name="map-marker-multiple" size={80} color="#4B5563" />
+          <Text className="text-2xl font-bold text-center mt-4 text-gray-800">
+            Découvre les SexPins
+          </Text>
+          <Text className="text-gray-600 text-center mt-2 mb-6">
+            Rejoins la communauté et explore les lieux les plus excitants près de chez toi
+          </Text>
+        </View>
+
+        <View className="mb-8">
+          <View className="flex-row items-center mb-4">
+            <MaterialCommunityIcons name="map-marker-check" size={24} color="#10B981" />
+            <Text className="ml-3 text-gray-700">
+              Découvre les spots secrets de ta région
+            </Text>
+          </View>
+          <View className="flex-row items-center mb-4">
+            <MaterialCommunityIcons name="account-group" size={24} color="#10B981" />
+            <Text className="ml-3 text-gray-700">
+              Partage tes expériences avec tes amis
+            </Text>
+          </View>
+          <View className="flex-row items-center mb-4">
+            <MaterialCommunityIcons name="incognito" size={24} color="#10B981" />
+            <Text className="ml-3 text-gray-700">
+              Reste totalement anonyme
+            </Text>
+          </View>
+        </View>
+
         <Button
-          title="Se connecter"
-          onPress={() => router.push("/modals/auth")}
+          title="Rejoindre l'aventure"
+          onPress={() => router.push({
+            pathname: "/modals/auth",
+            params: { presentation: 'modal' }
+          })}
         />
       </View>
     );

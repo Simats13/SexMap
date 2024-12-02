@@ -143,7 +143,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="success"
         options={{
-          title: "Success",
+          title: "Mes succès",
           tabBarIcon: ({ color }) => <TabBarIcon name="trophy" color={color} />,
         }}
       />
@@ -151,7 +151,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Mon compte",
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
