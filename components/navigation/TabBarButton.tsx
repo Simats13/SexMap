@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { TouchableOpacity, View, Animated } from "react-native";
+import { TouchableOpacity, View, Animated, Text } from "react-native";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useAuth } from "@/hooks/useAuth";
+import { useFriendRequests } from "@/hooks/useFriendRequests";
 
 type FeatherIconName = React.ComponentProps<typeof Feather>["name"];
 type FontAwesomeIconName = React.ComponentProps<typeof FontAwesome6>["name"];
@@ -41,6 +44,9 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
 }) => {
   const clickAnim = useRef(new Animated.Value(1)).current;
   const focusAnim = useRef(new Animated.Value(isFocused ? 1.1 : 1)).current;
+  const { data: user } = useAuth();
+  const { data: pendingRequests = [] } = useFriendRequests(user?.uid);
+  const showBadge = routeName === "social" && pendingRequests.length > 0;
 
   useEffect(() => {
     Animated.spring(focusAnim, {
@@ -75,7 +81,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
       onLongPress={onLongPress}
       className="flex-1 justify-center items-center min-w-12 min-h-12 z-10"
     >
-      <View className="flex-1 justify-center items-center">
+      <View className="relative">
         <Animated.View
           style={{ transform: [{ scale: scaleValue }] }}
           className="items-center"
@@ -94,6 +100,9 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
             />
           )}
         </Animated.View>
+        {showBadge && (
+          <View className="absolute -top-1 -right-1 bg-red-500 rounded-full w-2 h-2" />
+        )}
       </View>
     </TouchableOpacity>
   );

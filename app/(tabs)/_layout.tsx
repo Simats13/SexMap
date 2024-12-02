@@ -3,7 +3,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 
 import { usePathname } from "expo-router";
 
@@ -12,6 +12,7 @@ import { useColorScheme } from "react-native";
 import { TabBar } from "@/components/navigation/TabBar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/hooks/useAuth";
+import { useFriendRequests } from "@/hooks/useFriendRequests";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -69,6 +70,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
           headerRight: () => {
             const router = useRouter();
+            const { data: pendingRequests = [] } = useFriendRequests(user?.uid);
+            
             return (
               <TouchableOpacity
                 onPress={() =>
@@ -78,11 +81,20 @@ export default function TabLayout() {
                 }
                 className="mr-4"
               >
-                <MaterialCommunityIcons
-                  name="account-multiple"
-                  size={24}
-                  color="#666"
-                />
+                <View className="relative">
+                  <MaterialCommunityIcons
+                    name="account-multiple"
+                    size={24}
+                    color="#666"
+                  />
+                  {pendingRequests.length > 0 && (
+                    <View className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 items-center justify-center">
+                      <Text className="text-white text-xs font-bold">
+                        {pendingRequests.length}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </TouchableOpacity>
             );
           },
