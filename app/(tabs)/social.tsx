@@ -1,4 +1,10 @@
-import { Text, View, FlatList, TouchableOpacity, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useEffect, useState } from "react";
 import {
   collection,
@@ -63,24 +69,29 @@ export default function Social() {
                 where("visibility", "in", ["public", "friends"])
               )
             )
-          : getDocs(query(pinsRef, where("visibility", "==", "public")))
+          : getDocs(query(pinsRef, where("visibility", "==", "public"))),
       ]);
 
       const allPins = await Promise.all(
-        [...new Set([...personalSnap.docs, ...friendsSnap.docs].map(doc => doc.id))]
-          .map(async (docId) => {
-            const doc = [...personalSnap.docs, ...friendsSnap.docs].find(d => d.id === docId);
-            if (!doc) return null;
-            const data = doc.data();
-            return {
-              id: doc.id,
-              ...data,
-              date: data.date.toDate(),
-              name: await getDisplayName(data.userId),
-              visibility: data.visibility,
-            } as Pin;
-          })
-      ).then(pins => pins.filter((pin): pin is Pin => pin !== null));
+        [
+          ...new Set(
+            [...personalSnap.docs, ...friendsSnap.docs].map((doc) => doc.id)
+          ),
+        ].map(async (docId) => {
+          const doc = [...personalSnap.docs, ...friendsSnap.docs].find(
+            (d) => d.id === docId
+          );
+          if (!doc) return null;
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            date: data.date.toDate(),
+            name: await getDisplayName(data.userId),
+            visibility: data.visibility,
+          } as Pin;
+        })
+      ).then((pins) => pins.filter((pin): pin is Pin => pin !== null));
 
       setPins(allPins.sort((a, b) => b.date.getTime() - a.date.getTime()));
     } catch (error) {
@@ -115,8 +126,6 @@ export default function Social() {
       setLoading(false);
     }
   }, [deviceId, user]);
-
-  console.log("pins", pins);
 
   const renderItem = ({ item }: { item: Pin }) => (
     <TouchableOpacity
@@ -178,13 +187,18 @@ export default function Social() {
           <View className="bg-white rounded-2xl p-6 shadow-md">
             <View className="items-center mb-6">
               <View className="bg-blue-100 w-20 h-20 rounded-full items-center justify-center mb-4">
-                <MaterialCommunityIcons name="map-marker-multiple" size={40} color="red" />
+                <MaterialCommunityIcons
+                  name="map-marker-multiple"
+                  size={40}
+                  color="red"
+                />
               </View>
               <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
                 Découvre les SexPins
               </Text>
               <Text className="text-gray-600 text-center mb-4">
-                Rejoins la communauté et explore les lieux les plus excitants près de chez toi
+                Rejoins la communauté et explore les lieux les plus excitants
+                près de chez toi
               </Text>
             </View>
 
@@ -193,9 +207,16 @@ export default function Social() {
               <View className="opacity-50">
                 <TouchableOpacity className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
                   <View className="flex-1">
-                    <Text className="text-gray-800 font-medium mb-1">Exemple de Pin</Text>
+                    <Text className="text-gray-800 font-medium mb-1">
+                      Exemple de Pin
+                    </Text>
                     <View className="flex-row items-center">
-                      <MaterialCommunityIcons name="map-marker" size={16} color="#666" style={{ marginRight: 4 }} />
+                      <MaterialCommunityIcons
+                        name="map-marker"
+                        size={16}
+                        color="#666"
+                        style={{ marginRight: 4 }}
+                      />
                       <Text className="text-gray-600">Lieu mystérieux</Text>
                     </View>
                   </View>
@@ -204,9 +225,16 @@ export default function Social() {
               <View className="opacity-30">
                 <TouchableOpacity className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
                   <View className="flex-1">
-                    <Text className="text-gray-800 font-medium mb-1">Autre exemple</Text>
+                    <Text className="text-gray-800 font-medium mb-1">
+                      Autre exemple
+                    </Text>
                     <View className="flex-row items-center">
-                      <MaterialCommunityIcons name="map-marker" size={16} color="#666" style={{ marginRight: 4 }} />
+                      <MaterialCommunityIcons
+                        name="map-marker"
+                        size={16}
+                        color="#666"
+                        style={{ marginRight: 4 }}
+                      />
                       <Text className="text-gray-600">Endroit secret</Text>
                     </View>
                   </View>

@@ -89,6 +89,7 @@ export default function RootLayout() {
             options={{
               presentation: 'modal',
               headerShown: false,
+              animation: "slide_from_bottom",
             }}
           />
           <Stack.Screen
@@ -96,6 +97,15 @@ export default function RootLayout() {
             options={{
               presentation: "modal",
               headerShown: false,
+              animation: "slide_from_bottom", 
+            }}
+          />
+          <Stack.Screen
+            name="modals/filters"
+            options={{
+              presentation: "modal",
+              headerShown: false,
+              animation: "slide_from_bottom",
             }}
           />
         </Stack>

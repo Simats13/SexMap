@@ -9,17 +9,10 @@ import { Header } from "../organisms/Header";
 import { LocationPicker } from "../molecules/LocationPicker";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import {
-  Feather,
-  MaterialCommunityIcons,
-  EvilIcons,
-  FontAwesome,
-  Ionicons,
-} from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
-import { Button } from "../atoms/Button";
 import { User } from "firebase/auth";
 
 interface ShowSexTemplateProps {
@@ -112,36 +105,23 @@ export const ShowSexTemplate = ({
             </Text>
             {address && <Text className="text-gray-600 mb-2">{address}</Text>}
             <LocationPicker initialLocation={pin.location} readonly />
-          </View>
-
-          {pin.solo && (
-            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-              <Text className="text-gray-600 mb-2">
-                Cette expérience a été faite en solitaire 🤪
-              </Text>
-            </View>
-          )}
-
-          {pin.partners && !pin.solo && (
-            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-              <View className="flex-row items-center mb-2">
-                <Feather name="users" size={20} color="#4B5563" />
-                <Text className="text-lg font-semibold text-gray-800 ml-2">
-                  Partenaire
+            {pin.solo ? (
+              <View className="flex-row items-center mb-2 mt-4">
+                <Text className="text-gray-600">✊</Text>
+                <Text className="text-gray-600 ml-2">
+                  Des petits plaisirs en solitaire, c'est pas mal ! Sortez les
+                  mouchoirs 🧻
                 </Text>
               </View>
-              <View className="flex-row flex-wrap">
-                {pin.partners.map((partner, index) => (
-                  <View key={index} className="bg-red-100 rounded-full px-3 py-1 m-1 self-start">
-                    <Text className="text-red-600 text-base">{partner}</Text>
-                  </View>
-                ))}
+            ) : (
+              <View className="flex-row items-center mb-2 mt-4">
+                <Text className="text-gray-600">👫</Text>
+                <Text className="text-gray-600 ml-2">
+                  Des petits plaisirs en compagnie, c'est encore mieux !
+                </Text>
               </View>
-            </View>
-          )}
-
-          <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-            <View className="flex-row items-center mb-2">
+            )}
+            <View className="flex-row items-center mb-2 mt-4">
               <Feather name="calendar" size={20} color="#4B5563" />
               <Text className="text-lg font-semibold text-gray-800 ml-2">
                 Date et heure
@@ -150,46 +130,65 @@ export const ShowSexTemplate = ({
             <Text className="text-gray-600 text-base">
               {format(pin.createdAt, "PPPp", { locale: fr })}
             </Text>
-          </View>
-
-          {pin.description && (
-            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-              <View className="flex-row items-center mb-2">
-                <Feather name="file-text" size={20} color="#4B5563" />
-                <Text className="text-lg font-semibold text-gray-800 ml-2">
-                  Description
-                </Text>
-              </View>
-              <Text className="text-gray-600 text-base leading-relaxed">
-                {pin.description}
-              </Text>
-            </View>
-          )}
-
-          {pin.rating && (
-            <View className="mb-8 bg-white rounded-xl shadow-md p-4">
-              <View className="flex-row items-center mb-2">
-                <Feather name="star" size={20} color="#4B5563" />
-                <Text className="text-lg font-semibold text-gray-800 ml-2">
-                  Note
-                </Text>
-              </View>
-              <View className="flex-row">
-                {[...Array(5)].map((_, i) => (
-                  <Text
-                    key={i}
-                    className={
-                      i < (pin.rating ?? 0)
-                        ? "text-yellow-500 text-2xl"
-                        : "text-gray-300 text-2xl"
-                    }
-                  >
-                    ★
+            {pin.partners && !pin.solo && (
+              <>
+                <View className="flex-row items-center mb-2 mt-4">
+                  <Feather name="users" size={20} color="#4B5563" />
+                  <Text className="text-lg font-semibold text-gray-800 ml-2">
+                    Partenaire
                   </Text>
-                ))}
-              </View>
-            </View>
-          )}
+                </View>
+                <View className="flex-row flex-wrap">
+                  {pin.partners.map((partner, index) => (
+                    <View
+                      key={index}
+                      className="bg-red-100 rounded-full px-3 py-1 m-1 self-start"
+                    >
+                      <Text className="text-red-600 text-base">{partner}</Text>
+                    </View>
+                  ))}
+                </View>
+              </>
+            )}
+            {pin.description && (
+              <>
+                <View className="flex-row items-center mb-2 mt-4">
+                  <Feather name="file-text" size={20} color="#4B5563" />
+                  <Text className="text-lg font-semibold text-gray-800 ml-2">
+                    Description
+                  </Text>
+                </View>
+                <Text className="text-gray-600 text-base leading-relaxed">
+                  {pin.description}
+                </Text>
+              </>
+            )}
+
+            {pin.rating && (
+              <>
+                <View className="flex-row items-center mb-2 mt-4">
+                  <Feather name="star" size={20} color="#4B5563" />
+                  <Text className="text-lg font-semibold text-gray-800 ml-2">
+                    Note
+                  </Text>
+                </View>
+                <View className="flex-row">
+                  {[...Array(5)].map((_, i) => (
+                    <Text
+                      key={i}
+                      className={
+                        i < (pin.rating ?? 0)
+                          ? "text-yellow-500 text-2xl"
+                          : "text-gray-300 text-2xl"
+                      }
+                    >
+                      ★
+                    </Text>
+                  ))}
+                </View>
+              </>
+            )}
+          </View>
         </View>
       </ScrollView>
     </View>

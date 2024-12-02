@@ -136,7 +136,6 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
 
       // Envoyer les notifications si l'utilisateur est connecté et que le pin n'est pas anonyme
       if (user && !params.anonym && params.visibility !== "private") {
-        console.log("user.uid", user.uid);
         await notifyFriends(user.uid);
       }
 

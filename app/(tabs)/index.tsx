@@ -1,4 +1,10 @@
-import { Text, View, TouchableOpacity, Image, Dimensions, Linking, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Linking,
+  ScrollView,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "@tanstack/react-query";
 import * as Location from "expo-location";
@@ -30,7 +36,8 @@ const LocationDisabledView = () => (
             Localisation désactivée
           </Text>
           <Text className="text-gray-600 text-center mb-4">
-            Active ta position pour découvrir les SexPins près de chez toi et partager tes expériences
+            Active ta position pour découvrir les SexPins près de chez toi et
+            partager tes expériences
           </Text>
         </View>
 
@@ -46,9 +53,16 @@ const LocationDisabledView = () => (
           <View className="opacity-50">
             <View className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
               <View className="flex-1">
-                <Text className="text-gray-800 font-medium mb-1">SexPin à proximité</Text>
+                <Text className="text-gray-800 font-medium mb-1">
+                  SexPin à proximité
+                </Text>
                 <View className="flex-row items-center">
-                  <Feather name="map-pin" size={16} color="#666" style={{ marginRight: 4 }} />
+                  <Feather
+                    name="map-pin"
+                    size={16}
+                    color="#666"
+                    style={{ marginRight: 4 }}
+                  />
                   <Text className="text-gray-600">500m de chez toi</Text>
                 </View>
               </View>
@@ -58,9 +72,16 @@ const LocationDisabledView = () => (
           <View className="opacity-30">
             <View className="flex-row items-center p-4 bg-gray-50 rounded-lg">
               <View className="flex-1">
-                <Text className="text-gray-800 font-medium mb-1">Lieu secret</Text>
+                <Text className="text-gray-800 font-medium mb-1">
+                  Lieu secret
+                </Text>
                 <View className="flex-row items-center">
-                  <Feather name="map-pin" size={16} color="#666" style={{ marginRight: 4 }} />
+                  <Feather
+                    name="map-pin"
+                    size={16}
+                    color="#666"
+                    style={{ marginRight: 4 }}
+                  />
                   <Text className="text-gray-600">1km de chez toi</Text>
                 </View>
               </View>
@@ -239,7 +260,9 @@ export default function Index() {
               longitude: pin.location.longitude,
             }}
             title={pin.title}
-            onPress={() => router.push(`/modals/showSex?id=${pin.id}`)}
+            onPress={() => {
+              router.push(`/modals/showSex?id=${pin.id}`);
+            }}
             pinColor="#FF69B4"
           />
         ))}

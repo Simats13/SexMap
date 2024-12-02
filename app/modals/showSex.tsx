@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   arrayRemove,
@@ -37,7 +37,7 @@ export default function ShowSexModal() {
   const queryClient = useQueryClient();
 
   const { sendPushNotification } = usePushNotification(user?.uid);
-
+  const router = useRouter();
   const { data: pin, isLoading } = useQuery<Pin>({
     queryKey: ["pin", id],
     queryFn: async () => {
@@ -60,7 +60,11 @@ export default function ShowSexModal() {
         createdAt: data.date.toDate(),
         userId: data.userId,
         description: data.description,
-        partners: Array.isArray(data.partners) ? data.partners : data.partners ? [data.partners] : [],
+        partners: Array.isArray(data.partners)
+          ? data.partners
+          : data.partners
+          ? [data.partners]
+          : [],
         rating: data.rating,
         name: displayName,
         solo: data.solo,
@@ -69,13 +73,12 @@ export default function ShowSexModal() {
     },
   });
 
-  if (isLoading || !pin || !user) return null;
+  if (isLoading || !pin) return null;
 
   const addLike = async (id: string) => {
-    if (!user) return;
     try {
       await updateDoc(doc(db, "maps", id), {
-        like: arrayUnion(user.uid),
+        like: arrayUnion(user?.uid),
       });
       await queryClient.invalidateQueries({ queryKey: ["pin", id] });
     } catch (error) {
@@ -84,10 +87,9 @@ export default function ShowSexModal() {
   };
 
   const removeLike = async (id: string) => {
-    if (!user) return;
     try {
       await updateDoc(doc(db, "maps", id), {
-        like: arrayRemove(user.uid),
+        like: arrayRemove(user?.uid),
       });
       await queryClient.invalidateQueries({ queryKey: ["pin", id] });
     } catch (error) {
@@ -106,7 +108,8 @@ export default function ShowSexModal() {
   };
 
   const onLike = async () => {
-    if (!user) return;
+    if (!user) return router.push("/modals/auth");
+
     try {
       if (pin.like?.includes(user.uid)) {
         await removeLike(id);
@@ -126,6 +129,11 @@ export default function ShowSexModal() {
   };
 
   return (
-    <ShowSexTemplate user={user} pin={pin} onShare={onShare} onLike={onLike} />
+    <ShowSexTemplate
+      user={user!!}
+      pin={pin}
+      onShare={onShare}
+      onLike={onLike}
+    />
   );
 }
