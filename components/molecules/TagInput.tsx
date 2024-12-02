@@ -30,8 +30,6 @@ export const TagInput = ({
   filteredSuggestions = [],
   icon,
 }: TagInputProps) => {
-  console.log(filteredSuggestions);
-  console.log(tags);
   return (
     <View className="mb-6">
       <View className="flex-row flex-wrap gap-2 mb-2">
@@ -84,11 +82,7 @@ export const TagInput = ({
                   onPress={() => onAddTag(suggestion)}
                   className="p-3 border-b border-gray-100 flex-row items-center"
                 >
-                  <MaterialCommunityIcons
-                    name={icon}
-                    size={20}
-                    color="#666"
-                  />
+                  <MaterialCommunityIcons name={icon} size={20} color="#666" />
                   <Text className="ml-2 text-base">{suggestion}</Text>
                 </TouchableOpacity>
               ))}

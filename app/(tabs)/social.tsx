@@ -85,6 +85,12 @@ export default function Social() {
     setRefreshing(false);
   };
 
+  const onEndReached = () => {
+    if (!refreshing) {
+      onRefresh();
+    }
+  };
+
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -145,15 +151,9 @@ export default function Social() {
     </TouchableOpacity>
   );
 
-  if (loading) {
-    return (
-      <View className="flex-1 bg-gray-100 p-4">
-        {[...Array(5)].map((_, index) => (
-          <PinSkeleton key={index} />
-        ))}
-      </View>
-    );
-  }
+  const handlePinAdded = (newPin: Pin) => {
+    setPins(prev => [...prev, newPin].sort((a, b) => b.date.getTime() - a.date.getTime()));
+  };
 
   if (!user) {
     return (
@@ -169,16 +169,12 @@ export default function Social() {
     );
   }
 
-  if (pins.length === 0) {
+  if (loading) {
     return (
-      <View className="flex-1 bg-gray-100 p-4 justify-center items-center">
-        <Text className="text-lg text-gray-800 mb-4 text-center">
-          Aucun SexPin pour le moment
-        </Text>
-        <Button
-          title="Ajouter un SexPin"
-          onPress={() => router.push("/modals/addSex")}
-        />
+      <View className="flex-1 bg-gray-100 p-4">
+        {[...Array(5)].map((_, index) => (
+          <PinSkeleton key={index} />
+        ))}
       </View>
     );
   }
@@ -189,9 +185,25 @@ export default function Social() {
         data={pins}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{
+          padding: 16,
+          flexGrow: pins.length === 0 ? 1 : undefined,
+        }}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-lg text-gray-800 mb-4 text-center">
+              Aucun SexPin pour le moment
+            </Text>
+            <Button
+              title="Ajouter un SexPin"
+              onPress={() => router.push("/modals/addSex")}
+            />
+          </View>
+        }
       />
     </View>
   );

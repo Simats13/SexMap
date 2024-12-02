@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Keyboard } from "react-native";
 import { AuthTemplate } from "@/components/templates/AuthTemplate";
-import { useAuthActions } from '@/hooks/useAuthActions';
+import { useAuthActions } from "@/hooks/useAuthActions";
 
 export default function AuthModal() {
   const { signIn, signUp, loading, error, clearError } = useAuthActions();
@@ -35,10 +35,6 @@ export default function AuthModal() {
       signIn({ email: form.email, password: form.password });
     } else {
       if (form.password !== form.confirmPassword) {
-        console.log('Passwords:', { 
-          password: form.password, 
-          confirm: form.confirmPassword 
-        });
         return;
       }
       signUp({

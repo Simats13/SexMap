@@ -70,7 +70,10 @@ export const usePins = (region?: MapRegion, filter: FilterType = "public") => {
       setIsLoading(true);
       try {
         const collectionRef = collection(db, "maps");
-        let queryRef = query(collectionRef, where("visibility", "==", "public")); // Par défaut, charge les pins publics
+        let queryRef = query(
+          collectionRef,
+          where("visibility", "==", "public")
+        ); // Par défaut, charge les pins publics
 
         if (filter === "private" && deviceId) {
           queryRef = query(
@@ -84,8 +87,6 @@ export const usePins = (region?: MapRegion, filter: FilterType = "public") => {
           }
           const userDoc = await getDoc(doc(db, "users", user.uid));
           const friendsList = userDoc.data()?.friendsList || [];
-
-          console.log("friendsList", friendsList);
 
           queryRef = query(
             queryRef,

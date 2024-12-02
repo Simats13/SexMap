@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SexMap",
-    "slug": "SexMap",
+    "slug": "sexmap",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,13 +15,15 @@
     },
     "ios": {
       "supportsTablet": true,
-      "userInterfaceStyle": "dark"
+      "userInterfaceStyle": "dark",
+      "bundleIdentifier": "com.sexmap.off"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sexmap.off"
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +32,10 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -38,6 +43,15 @@
     "androidStatusBar": {
       "backgroundColor": "#000000",
       "barStyle": "light-content"
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f90e4201-63d6-4f34-8704-b78e6765c2ad"
+      }
+    },
+    "owner": "simats"
   }
 }
