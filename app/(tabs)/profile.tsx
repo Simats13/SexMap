@@ -73,47 +73,50 @@ export default function Profile() {
   if (!user) {
     return (
       <ScrollView className="flex-1 bg-gray-50">
-        <View className="flex-1 p-6">
-          {/* En-tête attractif */}
-          <View className="items-center mb-8">
-            <Ionicons name="map" size={80} color="#4B5563" />
-            <Text className="text-2xl font-bold text-center mt-4 text-gray-800">
-              Découvre SexMap
-            </Text>
-            <Text className="text-gray-600 text-center mt-2 mb-6">
-              Rejoins la communauté et partage tes expériences en toute
-              discrétion
-            </Text>
-          </View>
+        <View className="flex-1 bg-gray-50 p-6">
+          <View className="bg-white rounded-2xl p-6 shadow-md">
+            <View className="items-center mb-6">
+              <View className="bg-blue-100 w-20 h-20 rounded-full items-center justify-center mb-4">
+                <Ionicons name="person" size={40} color="red" />
+              </View>
+              <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
+                Crée ton profil
+              </Text>
+              <Text className="text-gray-600 text-center mb-4">
+                Rejoins la communauté et partage tes expériences en toute discrétion
+              </Text>
+            </View>
 
-          {/* Avantages de l'inscription */}
-          <View className="mb-8">
-            <View className="flex-row items-center mb-4">
-              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
-              <Text className="ml-3 text-gray-700">
-                Crée et découvre des lieux uniques
-              </Text>
+            {/* Aperçu des fonctionnalités */}
+            <View className="mb-6">
+              <View className="opacity-50 bg-gray-50 p-4 rounded-lg mb-2">
+                <View className="flex-row items-center mb-2">
+                  <Ionicons name="checkmark-circle" size={24} color="#10B981" />
+                  <Text className="ml-3 text-gray-700">
+                    Crée et découvre des lieux uniques
+                  </Text>
+                </View>
+              </View>
+              <View className="opacity-30 bg-gray-50 p-4 rounded-lg">
+                <View className="flex-row items-center mb-2">
+                  <Ionicons name="people" size={24} color="#10B981" />
+                  <Text className="ml-3 text-gray-700">
+                    Connecte-toi avec d'autres membres
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View className="flex-row items-center mb-4">
-              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
-              <Text className="ml-3 text-gray-700">
-                Connecte-toi avec d'autres membres
-              </Text>
-            </View>
-            <View className="flex-row items-center mb-4">
-              <Ionicons name="checkmark-circle" size={24} color="#10B981" />
-              <Text className="ml-3 text-gray-700">
-                Garde une trace de tes aventures
-              </Text>
-            </View>
-          </View>
 
-          {/* Boutons d'action */}
-          <View className="space-y-4">
-            <Button
-              title="Se connecter"
-              onPress={() => router.push("/modals/auth")}
-            />
+            <View className="items-center">
+              <Text
+                className="bg-red-500 text-white font-bold py-3 px-8 rounded-full text-center"
+                onPress={() => {
+                  router.push("/modals/auth");
+                }}
+              >
+                Se connecter
+              </Text>
+            </View>
           </View>
         </View>
       </ScrollView>

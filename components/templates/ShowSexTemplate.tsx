@@ -131,8 +131,8 @@ export const ShowSexTemplate = ({
                 </Text>
               </View>
               <View className="flex-row flex-wrap">
-                {pin.partners.map((partner) => (
-                  <View className="bg-red-100 rounded-full px-3 py-1 m-1 self-start">
+                {pin.partners.map((partner, index) => (
+                  <View key={index} className="bg-red-100 rounded-full px-3 py-1 m-1 self-start">
                     <Text className="text-red-600 text-base">{partner}</Text>
                   </View>
                 ))}

@@ -23,7 +23,7 @@ interface Pin {
   createdAt: Date;
   userId: string;
   description?: string;
-  partner?: string;
+  partners?: string[];
   rating?: number;
   name?: string;
   solo: boolean;
@@ -60,7 +60,7 @@ export default function ShowSexModal() {
         createdAt: data.date.toDate(),
         userId: data.userId,
         description: data.description,
-        partners: data.partners,
+        partners: Array.isArray(data.partners) ? data.partners : data.partners ? [data.partners] : [],
         rating: data.rating,
         name: displayName,
         solo: data.solo,

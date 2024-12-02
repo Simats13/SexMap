@@ -1,4 +1,4 @@
-import { Text, View, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import {
   collection,
@@ -173,46 +173,62 @@ export default function Social() {
 
   if (!user) {
     return (
-      <View className="flex-1 bg-gray-50 p-6">
-        <View className="items-center mb-8">
-          <MaterialCommunityIcons name="map-marker-multiple" size={80} color="#4B5563" />
-          <Text className="text-2xl font-bold text-center mt-4 text-gray-800">
-            Découvre les SexPins
-          </Text>
-          <Text className="text-gray-600 text-center mt-2 mb-6">
-            Rejoins la communauté et explore les lieux les plus excitants près de chez toi
-          </Text>
-        </View>
+      <ScrollView className="flex-1 bg-gray-50">
+        <View className="flex-1 bg-gray-50 p-6">
+          <View className="bg-white rounded-2xl p-6 shadow-md">
+            <View className="items-center mb-6">
+              <View className="bg-blue-100 w-20 h-20 rounded-full items-center justify-center mb-4">
+                <MaterialCommunityIcons name="map-marker-multiple" size={40} color="red" />
+              </View>
+              <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
+                Découvre les SexPins
+              </Text>
+              <Text className="text-gray-600 text-center mb-4">
+                Rejoins la communauté et explore les lieux les plus excitants près de chez toi
+              </Text>
+            </View>
 
-        <View className="mb-8">
-          <View className="flex-row items-center mb-4">
-            <MaterialCommunityIcons name="map-marker-check" size={24} color="#10B981" />
-            <Text className="ml-3 text-gray-700">
-              Découvre les spots secrets de ta région
-            </Text>
-          </View>
-          <View className="flex-row items-center mb-4">
-            <MaterialCommunityIcons name="account-group" size={24} color="#10B981" />
-            <Text className="ml-3 text-gray-700">
-              Partage tes expériences avec tes amis
-            </Text>
-          </View>
-          <View className="flex-row items-center mb-4">
-            <MaterialCommunityIcons name="incognito" size={24} color="#10B981" />
-            <Text className="ml-3 text-gray-700">
-              Reste totalement anonyme
-            </Text>
+            {/* Aperçu des pins */}
+            <View className="mb-6">
+              <View className="opacity-50">
+                <TouchableOpacity className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
+                  <View className="flex-1">
+                    <Text className="text-gray-800 font-medium mb-1">Exemple de Pin</Text>
+                    <View className="flex-row items-center">
+                      <MaterialCommunityIcons name="map-marker" size={16} color="#666" style={{ marginRight: 4 }} />
+                      <Text className="text-gray-600">Lieu mystérieux</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View className="opacity-30">
+                <TouchableOpacity className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
+                  <View className="flex-1">
+                    <Text className="text-gray-800 font-medium mb-1">Autre exemple</Text>
+                    <View className="flex-row items-center">
+                      <MaterialCommunityIcons name="map-marker" size={16} color="#666" style={{ marginRight: 4 }} />
+                      <Text className="text-gray-600">Endroit secret</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="items-center">
+              <TouchableOpacity
+                className="bg-red-500 rounded-full"
+                onPress={() => {
+                  router.push("/modals/auth");
+                }}
+              >
+                <Text className="text-white font-bold py-3 px-8 text-center">
+                  Se connecter
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-
-        <Button
-          title="Rejoindre l'aventure"
-          onPress={() => router.push({
-            pathname: "/modals/auth",
-            params: { presentation: 'modal' }
-          })}
-        />
-      </View>
+      </ScrollView>
     );
   }
 

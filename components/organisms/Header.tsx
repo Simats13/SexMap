@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 
 interface HeaderProps {
   title: string;
-  onClose: () => void;
+  onClose?: () => void;
   rightElement?: React.ReactNode;
 }
 

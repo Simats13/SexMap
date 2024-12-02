@@ -35,6 +35,10 @@ export default function AuthModal() {
       signIn({ email: form.email, password: form.password });
     } else {
       if (form.password !== form.confirmPassword) {
+        console.log("Passwords:", {
+          password: form.password,
+          confirm: form.confirmPassword,
+        });
         return;
       }
       signUp({
