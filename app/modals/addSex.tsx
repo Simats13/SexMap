@@ -13,7 +13,7 @@ export default function AddSexModal() {
 
   return (
     <AddSexTemplate 
-      user={user}
+      user={user ?? null}
       onSubmit={handleSubmit} 
       loading={loading} 
       error={error} 

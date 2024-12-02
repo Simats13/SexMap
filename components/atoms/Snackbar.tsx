@@ -1,80 +1,89 @@
-import { useEffect } from 'react';
-import { View, Text, Animated, Keyboard, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
 
 interface SnackbarProps {
   message: string;
-  visible: boolean;
-  onDismiss: () => void;
-  type?: 'error' | 'success';
-  keyboardVisible?: boolean;
+  action?: {
+    label: string;
+    onPress: () => void;
+  };
+  duration?: number;
+  onDismiss?: () => void;
 }
 
-export const Snackbar = ({ 
-  message, 
-  visible, 
-  onDismiss, 
-  type = 'error',
-  keyboardVisible = false,
+const renderMessage = (message: string) => {
+  const parts = message.split(/(\*[^*]+\*)/g);
+  return (
+    <Text className="text-white flex-1 mr-4">
+      {parts.map((part, index) => {
+        if (part.startsWith('*') && part.endsWith('*')) {
+          return (
+            <Text key={index} style={{ fontStyle: 'italic' }}>
+              {part.slice(1, -1)}
+            </Text>
+          );
+        }
+        return <Text key={index}>{part}</Text>;
+      })}
+    </Text>
+  );
+};
+
+export const Snackbar = ({
+  message,
+  action,
+  duration = 4000,
+  onDismiss,
 }: SnackbarProps) => {
-  const insets = useSafeAreaInsets();
-  const opacity = new Animated.Value(0);
+  const [visible, setVisible] = useState(true);
   const translateY = new Animated.Value(100);
 
   useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
 
-      const timer = setTimeout(() => {
-        Animated.parallel([
-          Animated.timing(opacity, {
-            toValue: 0,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          Animated.timing(translateY, {
-            toValue: 100,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-        ]).start(() => onDismiss());
-      }, 3000);
+    const timer = setTimeout(() => {
+      hide();
+    }, duration);
 
-      return () => clearTimeout(timer);
-    }
-  }, [visible]);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const hide = () => {
+    Animated.timing(translateY, {
+      toValue: 100,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setVisible(false);
+      onDismiss?.();
+    });
+  };
 
   if (!visible) return null;
 
   return (
     <Animated.View
-      style={{
-        opacity,
-        transform: [{ translateY }],
-        position: 'absolute',
-        bottom: keyboardVisible ? (Platform.OS === 'ios' ? 320 : 0) : insets.bottom + 16,
-        left: 16,
-        right: 16,
-        zIndex: 1000,
-      }}
+      className="absolute bottom-0 left-0 right-0 bg-gray-800 mx-4 mb-4 rounded-lg shadow-lg"
+      style={{ transform: [{ translateY }] }}
     >
-      <View
-        className={`p-4 rounded-lg shadow-lg ${
-          type === 'error' ? 'bg-red-500' : 'bg-green-500'
-        }`}
-      >
-        <Text className="text-white text-center font-medium">{message}</Text>
+      <View className="flex-row items-center justify-between p-4">
+        {renderMessage(message)}
+        {action && (
+          <TouchableOpacity
+            onPress={() => {
+              action.onPress();
+              hide();
+            }}
+          >
+            <Text className="text-red-500 font-medium uppercase">
+              {action.label}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </Animated.View>
   );

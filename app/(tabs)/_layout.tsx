@@ -65,8 +65,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="social"
         options={{
-          title: "Social",
+          title: "Actualités",
           tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
+          headerRight: () => {
+            const router = useRouter();
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  !user
+                    ? router.push("/modals/auth")
+                    : router.push("/modals/friendsList")
+                }
+                className="mr-4"
+              >
+                <MaterialCommunityIcons
+                  name="account-multiple"
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
 

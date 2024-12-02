@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { Header } from "../organisms/Header";
 import { AuthForm } from "../organisms/AuthForm";
-import { Snackbar } from '../atoms/Snackbar';
+import { ErrorSnackbar } from "@/components/atoms/ErrorSnackbar";
 
 interface AuthTemplateProps {
   isLogin: boolean;
@@ -51,8 +51,8 @@ export const AuthTemplate = ({
         loading={loading}
       />
     </ScrollView>
-    <Snackbar
-      message={error || ''}
+    <ErrorSnackbar
+      message={error || ""}
       visible={!!error}
       onDismiss={onDismissError}
       type="error"
