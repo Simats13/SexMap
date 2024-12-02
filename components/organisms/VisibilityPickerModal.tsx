@@ -46,9 +46,10 @@ export const VisibilityPickerModal = ({
             <Picker
               selectedValue={tempValue}
               onValueChange={setTempValue}
-              style={{ height: 200 }}
+              style={{ height: 200, color: 'black' }}
+              itemStyle={{ color: 'black' }}
             >
-              <Picker.Item label="Public" value="public" />
+              <Picker.Item label="Publique" value="public" />
               <Picker.Item label="Amis uniquement" value="friends" />
               <Picker.Item label="Privé" value="private" />
             </Picker>

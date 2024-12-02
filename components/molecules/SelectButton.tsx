@@ -12,7 +12,7 @@ export const SelectButton = ({ onPress, title, icon = "chevron-right" }: SelectB
     onPress={onPress}
     className="border border-gray-300 rounded-lg p-4 mb-6 flex-row justify-between items-center"
   >
-    <Text className="text-gray-500">{title}</Text>
+    <Text className="text-black">{title}</Text>
     <Feather name={icon} size={20} color="#666" />
   </TouchableOpacity>
 ); 

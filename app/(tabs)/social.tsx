@@ -17,6 +17,7 @@ import { fr } from "date-fns/locale";
 import { useRouter } from "expo-router";
 import { RatingBar } from "@/components/atoms/RatingBar";
 import { PinSkeleton } from "@/components/atoms/PinSkeleton";
+import { Button } from "@/components/atoms/Button";
 
 interface Pin {
   id: string;
@@ -61,14 +62,16 @@ export default function Social() {
 
       const [personalSnap, friendsSnap] = await Promise.all([
         getDocs(personalQuery),
-        getDocs(friendsQuery)
+        getDocs(friendsQuery),
       ]);
 
-      const allPins = [...personalSnap.docs, ...friendsSnap.docs].map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        date: doc.data().date.toDate(),
-      })) as Pin[];
+      const allPins = [...personalSnap.docs, ...friendsSnap.docs].map(
+        (doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().date.toDate(),
+        })
+      ) as Pin[];
 
       setPins(allPins.sort((a, b) => b.date.getTime() - a.date.getTime()));
     } catch (error) {
@@ -93,6 +96,8 @@ export default function Social() {
 
     if (user) {
       loadInitialData();
+    } else {
+      setLoading(false);
     }
   }, [deviceId, user]);
 
@@ -146,6 +151,34 @@ export default function Social() {
         {[...Array(5)].map((_, index) => (
           <PinSkeleton key={index} />
         ))}
+      </View>
+    );
+  }
+
+  if (!user) {
+    return (
+      <View className="flex-1 items-center justify-center p-4">
+        <Text className="text-gray-500 text-center mb-4">
+          Connecte-toi pour voir les SexPins de tes amis
+        </Text>
+        <Button
+          title="Se connecter"
+          onPress={() => router.push("/modals/auth")}
+        />
+      </View>
+    );
+  }
+
+  if (pins.length === 0) {
+    return (
+      <View className="flex-1 bg-gray-100 p-4 justify-center items-center">
+        <Text className="text-lg text-gray-800 mb-4 text-center">
+          Aucun SexPin pour le moment
+        </Text>
+        <Button
+          title="Ajouter un SexPin"
+          onPress={() => router.push("/modals/addSex")}
+        />
       </View>
     );
   }

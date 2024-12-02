@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { ScrollView, View, Text, Switch } from "react-native";
+import { ScrollView, View, Text, Switch, TouchableOpacity } from "react-native";
 import { Header } from "../organisms/Header";
 import { SelectButton } from "../molecules/SelectButton";
 import { DatePickerButton } from "../molecules/DatePickerButton";
@@ -10,24 +10,43 @@ import { VisibilityPickerModal } from "../organisms/VisibilityPickerModal";
 import { RatingBar } from "../atoms/RatingBar";
 import { LocationPicker } from "../molecules/LocationPicker";
 import { useState } from "react";
+import { TagInput } from "../molecules/TagInput";
 
-export interface AddSexTemplateProps {
+interface AddSexTemplateProps {
   user: User | null;
   loading?: boolean;
   error?: string | null;
-  onSubmit: (data: {
-    date: Date;
-    description?: string;
-    location: {
-      latitude: number;
-      longitude: number;
-    };
-    locationName?: string;
-    rating?: number;
-    visibility: 'public' | 'private' | 'friends';
-    partners?: string[];
-    anonym?: boolean;
-  }) => void;
+  partners: Array<{ label: string; value: string }>;
+  selectedPartners: Array<{ label: string; value: string }>;
+  onUpdatePartners: (tags: string[]) => void;
+  onSubmit: (data: any) => void;
+  locations: Array<{ label: string; value: string }>;
+  selectedLocations: Array<{ label: string; value: string }>;
+  onUpdateLocations: (tags: string[]) => void;
+  date: Date;
+  setDate: (date: Date) => void;
+  showDatePicker: boolean;
+  setShowDatePicker: (show: boolean) => void;
+  showPicker: boolean;
+  setShowPicker: (show: boolean) => void;
+  selectedVisibility: "public" | "private" | "friends";
+  setSelectedVisibility: (visibility: "public" | "private" | "friends") => void;
+  rating: number;
+  setRating: (rating: number) => void;
+  location: { latitude: number; longitude: number };
+  setLocation: (location: { latitude: number; longitude: number }) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  anonym: boolean;
+  setAnonym: (anonym: boolean) => void;
+  onClose: () => void;
+  onPressAuth: () => void;
+  partnersInput: string;
+  setPartnersInput: (value: string) => void;
+  locationsInput: string;
+  setLocationsInput: (value: string) => void;
+  partnersFiltered: string[];
+  locationsFiltered: string[];
 }
 
 const formatDateTime = (date: Date) => {
@@ -40,19 +59,42 @@ const formatDateTime = (date: Date) => {
   });
 };
 
-export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplateProps) => {
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
-  const [selectedVisibility, setSelectedVisibility] = useState<'public' | 'private' | 'friends'>('public');
-  const [rating, setRating] = useState(0);
-  const [location, setLocation] = useState<{ latitude: number; longitude: number }>({
-    latitude: 48.866667,
-    longitude: 2.333333
-  });
-  const [description, setDescription] = useState('');
-  const [anonym, setAnonym] = useState(false);
-
+export const AddSexTemplate = ({
+  user,
+  loading,
+  error,
+  partners,
+  selectedPartners,
+  onUpdatePartners,
+  onSubmit,
+  locations,
+  selectedLocations,
+  onUpdateLocations,
+  date,
+  setDate,
+  showDatePicker,
+  setShowDatePicker,
+  showPicker,
+  setShowPicker,
+  selectedVisibility,
+  setSelectedVisibility,
+  rating,
+  setRating,
+  location,
+  setLocation,
+  description,
+  setDescription,
+  anonym,
+  setAnonym,
+  onClose,
+  onPressAuth,
+  partnersInput,
+  setPartnersInput,
+  locationsInput,
+  setLocationsInput,
+  partnersFiltered,
+  locationsFiltered,
+}: AddSexTemplateProps) => {
   const handleSubmit = () => {
     onSubmit({
       date,
@@ -67,7 +109,7 @@ export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplat
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1">
-        <Header title="Ajouter un SexPin" />
+        <Header title="Ajouter un SexPin" onClose={onClose} />
         <ScrollView className="flex-1">
           <View className="p-4">
             <View className="mb-6">
@@ -77,45 +119,66 @@ export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplat
               <LocationPicker onLocationChange={setLocation} />
             </View>
 
-            <Text className="text-lg mb-6 text-gray-800">
-              {user
-                ? "Ajoute un(e) partenaire et le lieu de tes ébats"
-                : "Connecte toi pour ajouter un(e) partenaire et le lieu de tes ébats"}
-            </Text>
+            {user ? (
+              <Text className="text-lg mb-6 text-gray-800">
+                Ajoute un(e) partenaire et le lieu de tes ébats
+              </Text>
+            ) : (
+              <TouchableOpacity onPress={onPressAuth}>
+                <Text className="text-lg mb-6 text-blue-500">
+                  Connecte-toi pour ajouter un(e) partenaire et le lieu de tes
+                  ébats
+                </Text>
+              </TouchableOpacity>
+            )}
 
             {user && (
               <>
                 <Text className="text-gray-700 mb-2">
                   Sélectionne un.e de tes ami.e.s ou saisi son nom :
                 </Text>
-                <SelectButton
-                  title="Ajoute ton/ta/tes partenaire(s)"
-                  onPress={() => {}}
+                <TagInput
+                  tags={selectedPartners.map((p) => p.value)}
+                  inputValue={partnersInput}
+                  onInputChange={setPartnersInput}
+                  onAddTag={(tag) => onUpdatePartners([...selectedPartners.map(p => p.value), tag])}
+                  onRemoveTag={(tag) => onUpdatePartners(selectedPartners.map(p => p.value).filter(t => t !== tag))}
+                  placeholder="Ajouter un partenaire de crime ..."
+                  filteredSuggestions={partnersFiltered}
                 />
-
-                <Text className="text-gray-700 mb-2">
+                <Text className="text-black mb-2">
                   Sélectionne un de tes lieux favoris ou saisi son nom :
                 </Text>
-                <SelectButton
-                  title="Ajoute le lieu de tes ébats"
-                  onPress={() => {}}
+                <TagInput
+                  tags={selectedLocations.map((p) => p.value)}
+                  inputValue={locationsInput}
+                  onInputChange={setLocationsInput}
+                  onAddTag={(tag) => onUpdateLocations([...selectedLocations.map(p => p.value), tag])}
+                  onRemoveTag={(tag) => onUpdateLocations(selectedLocations.map(p => p.value).filter(t => t !== tag))}
+                  placeholder="Ajouter un lieu de tes ébats ..."
+                  filteredSuggestions={locationsFiltered}
                 />
               </>
             )}
 
-            <DatePickerButton
-              onPress={() => setShowDatePicker(true)}
-              value={formatDateTime(date)}
-              placeholder="Sélectionner la date et l'heure"
-            />
+            <View>
+              <Text className="text-gray-700 mb-2">
+                Ajoute la date et l'heure du crime
+              </Text>
+              <DatePickerButton
+                onPress={() => setShowDatePicker(true)}
+                value={formatDateTime(date)}
+                placeholder="Sélectionner la date et l'heure"
+              />
+            </View>
 
             {user && (
-              <View className="mb-6">
+              <View>
                 <Text className="text-gray-700 mb-2">Visibilité</Text>
                 <SelectButton
                   title={
                     selectedVisibility === "public"
-                      ? "Public"
+                      ? "Publique"
                       : selectedVisibility === "friends"
                       ? "Amis uniquement"
                       : "Privé"
@@ -125,18 +188,22 @@ export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplat
                 />
               </View>
             )}
+            <View>
+              <Text className="text-gray-700 mb-2">
+                Raconte une anecdote croustillante
+              </Text>
+              <Input
+                multiline
+                numberOfLines={4}
+                placeholder="Raconter une anecdotre croustillante, comment ça s'est passé, quel était l'état dans lequel vous étiez..."
+                className="h-32"
+                textAlignVertical="top"
+                value={description}
+                onChangeText={setDescription}
+              />
+            </View>
 
-            <Input
-              multiline
-              numberOfLines={4}
-              placeholder="Raconter une anecdotre croustillante, comment ça s'est passé, quel était l'état dans lequel vous étiez..."
-              className="h-32"
-              textAlignVertical="top"
-              value={description}
-              onChangeText={setDescription}
-            />
-
-            {user && (
+            {user && selectedVisibility === "public" && (
               <View className="flex-row items-center justify-between mt-4 mb-8">
                 <View className="flex-1">
                   <Text className="text-gray-700 mb-1">Publier en anonyme</Text>
@@ -145,26 +212,30 @@ export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplat
                     public
                   </Text>
                 </View>
-                <Switch className="ml-4" />
+                <Switch
+                  value={anonym}
+                  onValueChange={setAnonym}
+                  className="ml-4"
+                  trackColor={{ false: "#E5E7EB", true: "#FEE2E2" }}
+                  thumbColor={anonym ? "#DC2626" : "#9CA3AF"}
+                />
               </View>
             )}
 
-            <View className="mb-8 mt-5">
+            <View className="mb-8">
               <Text className="text-gray-700 mb-2">Note ton expérience</Text>
               <RatingBar rating={rating} onRatingChange={setRating} />
             </View>
 
             <Button
-              title="Ajouter"
+              title="Envoyer mon SexPin 📍"
               onPress={handleSubmit}
               loading={loading}
               className="mt-4"
             />
 
             {error && (
-              <Text className="text-red-500 text-center mt-2">
-                {error}
-              </Text>
+              <Text className="text-red-500 text-center mt-2">{error}</Text>
             )}
           </View>
         </ScrollView>
@@ -185,7 +256,7 @@ export const AddSexTemplate = ({ user, loading, error, onSubmit }: AddSexTemplat
         onClose={() => setShowPicker(false)}
         selectedValue={selectedVisibility}
         onConfirm={(value) => {
-          setSelectedVisibility(value as 'public' | 'private' | 'friends');
+          setSelectedVisibility(value as "public" | "private" | "friends");
           setShowPicker(false);
         }}
       />
