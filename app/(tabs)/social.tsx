@@ -1,6 +1,13 @@
 import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { useDeviceId } from "@/hooks/useDeviceId";
@@ -9,6 +16,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useRouter } from "expo-router";
 import { RatingBar } from "@/components/atoms/RatingBar";
+import { PinSkeleton } from "@/components/atoms/PinSkeleton";
 
 interface Pin {
   id: string;
@@ -21,36 +29,71 @@ interface Pin {
 export default function Social() {
   const [pins, setPins] = useState<Pin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { data: user } = useAuth();
   const { deviceId } = useDeviceId();
   const router = useRouter();
 
+  const fetchPins = async () => {
+    try {
+      const pinsRef = collection(db, "maps");
+      const userDoc = await getDoc(doc(db, "users", user?.uid || ""));
+      const friendsList = userDoc.data()?.friendsList || [];
+
+      const friendsLinks = await Promise.all(
+        friendsList.map(async (friendId: string) => {
+          const friendDoc = await getDoc(doc(db, "users", friendId));
+          return friendDoc.data()?.linkId;
+        })
+      );
+
+      const personalQuery = query(
+        pinsRef,
+        where("link", "in", [deviceId, user?.uid || ""]),
+        where("visibility", "in", ["private", "public", "friends"])
+      );
+
+      const friendsQuery = query(
+        pinsRef,
+        where("link", "in", friendsLinks.filter(Boolean)),
+        where("visibility", "in", ["public", "friends"])
+      );
+
+      const [personalSnap, friendsSnap] = await Promise.all([
+        getDocs(personalQuery),
+        getDocs(friendsQuery)
+      ]);
+
+      const allPins = [...personalSnap.docs, ...friendsSnap.docs].map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        date: doc.data().date.toDate(),
+      })) as Pin[];
+
+      setPins(allPins.sort((a, b) => b.date.getTime() - a.date.getTime()));
+    } catch (error) {
+      console.error("Erreur lors de la récupération des pins:", error);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPins();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
-    const fetchPins = async () => {
+    const loadInitialData = async () => {
       try {
-        const pinsRef = collection(db, "maps");
-        let q = query(
-          pinsRef,
-          where("link", "in", [deviceId, user?.uid || ""]),
-          where("visibility", "in", ["private", "public", "friends"])
-        );
-
-        const querySnapshot = await getDocs(q);
-        const pinsList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          date: doc.data().date.toDate(),
-        })) as Pin[];
-
-        setPins(pinsList.sort((a, b) => b.date.getTime() - a.date.getTime()));
-      } catch (error) {
-        console.error("Erreur lors de la récupération des pins:", error);
+        await fetchPins();
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPins();
+    if (user) {
+      loadInitialData();
+    }
   }, [deviceId, user]);
 
   const renderItem = ({ item }: { item: Pin }) => (
@@ -69,7 +112,9 @@ export default function Social() {
             color="#666"
             style={{ marginRight: 4 }}
           />
-          <Text className="text-gray-600">{item.locationName || "Sans lieu"}</Text>
+          <Text className="text-gray-600">
+            {item.locationName || "Sans lieu"}
+          </Text>
         </View>
         {item.rating && (
           <View className="mt-1">
@@ -97,8 +142,10 @@ export default function Social() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Chargement...</Text>
+      <View className="flex-1 bg-gray-100 p-4">
+        {[...Array(5)].map((_, index) => (
+          <PinSkeleton key={index} />
+        ))}
       </View>
     );
   }
@@ -110,6 +157,8 @@ export default function Social() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ padding: 16 }}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );
