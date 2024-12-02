@@ -30,18 +30,11 @@ export default function ShowSexModal() {
       if (!docSnap.exists()) throw new Error("Pin not found");
       const data = docSnap.data();
 
-      let createdAt = new Date();
-      try {
-        createdAt = data.createdAt?.toDate() || new Date();
-      } catch (error) {
-        console.error('Invalid date:', error);
-      }
-
       return {
         id: docSnap.id,
         title: data.title,
         location: data.location,
-        createdAt,
+        createdAt: data.date.toDate(),
         userId: data.userId,
         description: data.description,
         partner: data.partner,
@@ -53,4 +46,4 @@ export default function ShowSexModal() {
   if (isLoading || !pin) return null;
 
   return <ShowSexTemplate pin={pin} />;
-} 
+}
