@@ -53,29 +53,34 @@ export default function Social() {
         where("visibility", "in", ["private", "public", "friends"])
       );
 
-      const friendsQuery = query(
-        pinsRef,
-        where("userId", "in", friendsList.filter(Boolean)),
-        where("visibility", "in", ["public", "friends"])
-      );
-
       const [personalSnap, friendsSnap] = await Promise.all([
         getDocs(personalQuery),
-        getDocs(friendsQuery),
+        friendsList.length > 0
+          ? getDocs(
+              query(
+                pinsRef,
+                where("userId", "in", friendsList),
+                where("visibility", "in", ["public", "friends"])
+              )
+            )
+          : getDocs(query(pinsRef, where("visibility", "==", "public")))
       ]);
 
       const allPins = await Promise.all(
-        [...personalSnap.docs, ...friendsSnap.docs].map(async (doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            date: data.date.toDate(),
-            name: await getDisplayName(data.userId),
-            visibility: data.visibility,
-          } as Pin;
-        })
-      );
+        [...new Set([...personalSnap.docs, ...friendsSnap.docs].map(doc => doc.id))]
+          .map(async (docId) => {
+            const doc = [...personalSnap.docs, ...friendsSnap.docs].find(d => d.id === docId);
+            if (!doc) return null;
+            const data = doc.data();
+            return {
+              id: doc.id,
+              ...data,
+              date: data.date.toDate(),
+              name: await getDisplayName(data.userId),
+              visibility: data.visibility,
+            } as Pin;
+          })
+      ).then(pins => pins.filter((pin): pin is Pin => pin !== null));
 
       setPins(allPins.sort((a, b) => b.date.getTime() - a.date.getTime()));
     } catch (error) {

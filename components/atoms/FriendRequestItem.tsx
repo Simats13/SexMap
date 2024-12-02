@@ -1,34 +1,39 @@
 import { TouchableOpacity, View, Text } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface FriendRequestItemProps {
   displayName: string;
-  onAccept: () => void;
-  onReject: () => void;
+  onAccept?: () => void;
+  onReject?: () => void;
+  isPending?: boolean;
+  onCancel?: () => void;
 }
 
 export const FriendRequestItem = ({
   displayName,
   onAccept,
   onReject,
+  isPending,
+  onCancel,
 }: FriendRequestItemProps) => (
-  <TouchableOpacity className="flex-row items-center justify-between bg-gray-50 p-4 rounded-lg">
-    <View className="flex-row items-center">
-      <MaterialCommunityIcons name="account" size={24} color="#666" />
-      <Text className="ml-3 font-medium">
-        {displayName.length > 10
-          ? `${displayName.slice(0, 10)}... `
-          : displayName}{" "}
-        vous a demandé en ami
-      </Text>
-    </View>
-    <View className="flex-row">
-      <TouchableOpacity onPress={onAccept} className="p-2">
-        <MaterialCommunityIcons name="check-circle" size={20} color="green" />
+  <View className="flex-row items-center justify-between p-4 bg-white rounded-lg">
+    <Text className="text-gray-800 font-medium">{displayName}</Text>
+    <View className="flex-row space-x-2">
+      {!isPending && onAccept && (
+        <TouchableOpacity
+          onPress={onAccept}
+          className="bg-red-500 px-3 py-1 rounded-lg"
+        >
+          <Text className="text-white">Accepter</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity
+        onPress={isPending ? onCancel : onReject}
+        className="bg-gray-200 px-3 py-1 rounded-lg"
+      >
+        <Text className="text-gray-700">
+          {isPending ? "Annuler" : "Refuser"}
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onReject} className="p-2">
-        <MaterialCommunityIcons name="close-circle" size={20} color="red" />
-      </TouchableOpacity>
     </View>
-  </TouchableOpacity>
-); 
+  </View>
+);

@@ -6,6 +6,7 @@ import { fr } from "date-fns/locale";
 import { Feather } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
+import { useRouter } from "expo-router";
 
 interface ShowSexTemplateProps {
   pin: {
@@ -25,6 +26,7 @@ interface ShowSexTemplateProps {
 }
 
 export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
+  const router = useRouter();
   const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export const ShowSexTemplate = ({ pin }: ShowSexTemplateProps) => {
 
   return (
     <View className="flex-1 bg-white">
-      <Header title="Détails du SexPin" />
+      <Header title="Détails du SexPin" onClose={() => router.back()} />
       <ScrollView className="flex-1">
         <View className="p-4">
           <View className="mb-8 bg-white rounded-xl shadow-md p-4">
