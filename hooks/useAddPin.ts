@@ -4,20 +4,17 @@ import { useDeviceId } from "./useDeviceId";
 import { db } from "@/config/firebase";
 import { addDoc, collection, GeoPoint } from "firebase/firestore";
 import { useRouter } from "expo-router";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query";
 
-interface AddPinParams {
+export interface AddPinParams {
   date: Date;
-  description?: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-  locationName?: string;
-  rating?: number;
+  description: string;
+  location: { latitude: number; longitude: number };
+  rating: number;
   visibility: "public" | "private" | "friends";
-  partners?: string[];
-  anonym?: boolean;
+  anonym: boolean;
+  partners: string[];
+  locationName: string;
 }
 
 export const useAddPin = () => {
@@ -41,7 +38,10 @@ export const useAddPin = () => {
             description: params.description,
             likes: [],
             link: deviceId,
-            location: new GeoPoint(params.location.latitude, params.location.longitude),
+            location: new GeoPoint(
+              params.location.latitude,
+              params.location.longitude
+            ),
             locationName: params.locationName,
             partners: params.partners || [],
             rating: params.rating,
@@ -53,7 +53,10 @@ export const useAddPin = () => {
             date: params.date,
             description: params.description,
             link: deviceId,
-            location: new GeoPoint(params.location.latitude, params.location.longitude),
+            location: new GeoPoint(
+              params.location.latitude,
+              params.location.longitude
+            ),
             rating: params.rating,
             visibility: params.visibility,
           };

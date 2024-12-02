@@ -4,6 +4,7 @@ import { db } from "@/config/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { AddSexTemplate } from "@/components/templates/AddSexTemplate";
 import { useRouter } from "expo-router";
+import { AddPinParams, useAddPin } from "@/hooks/useAddPin";
 
 interface UserData {
   partners?: string[];
@@ -50,6 +51,7 @@ export default function AddSexModal() {
   const [locationsFiltered, setLocationsFiltered] = useState<string[]>([]);
 
   const router = useRouter();
+  const addPin = useAddPin();
 
   useEffect(() => {
     const fetchPartnersAndFriends = async () => {
@@ -87,11 +89,38 @@ export default function AddSexModal() {
     fetchUserData();
   }, [user]);
 
+  useEffect(() => {
+    if (partnersInput.length > 0) {
+      const filtered = partners
+        .map(p => p.label)
+        .filter(partner => 
+          partner.toLowerCase().includes(partnersInput.toLowerCase())
+        );
+      setPartnersFiltered(filtered);
+    } else {
+      setPartnersFiltered([]);
+    }
+  }, [partnersInput, partners]);
+
+  useEffect(() => {
+    if (locationsInput.length > 0) {
+      const filtered = locations
+        .map(l => l.label)
+        .filter(location => 
+          location.toLowerCase().includes(locationsInput.toLowerCase())
+        );
+      setLocationsFiltered(filtered);
+    } else {
+      setLocationsFiltered([]);
+    }
+  }, [locationsInput, locations]);
+
   const handleUpdatePartners = async (newTags: string[]) => {
     if (!user) return;
 
     const newItems = newTags.map((tag) => ({ label: tag, value: tag }));
     setSelectedPartners(newItems);
+    setPartnersInput('');
 
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const userData = userDoc.data() as UserData;
@@ -125,6 +154,7 @@ export default function AddSexModal() {
 
     const newItems = newTags.map((tag) => ({ label: tag, value: tag }));
     setSelectedLocations(newItems);
+    setLocationsInput('');
 
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const userData = userDoc.data() as UserData;
@@ -145,10 +175,10 @@ export default function AddSexModal() {
     }
   };
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: AddPinParams) => {
     setLoading(true);
     try {
-      // Logique de soumission
+      await addPin.addPin(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {

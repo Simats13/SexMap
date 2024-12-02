@@ -9,8 +9,8 @@ import { DateTimePickerModal } from "../organisms/DateTimePickerModal";
 import { VisibilityPickerModal } from "../organisms/VisibilityPickerModal";
 import { RatingBar } from "../atoms/RatingBar";
 import { LocationPicker } from "../molecules/LocationPicker";
-import { useState } from "react";
 import { TagInput } from "../molecules/TagInput";
+import { AddPinParams } from "@/hooks/useAddPin";
 
 interface AddSexTemplateProps {
   user: User | null;
@@ -19,7 +19,7 @@ interface AddSexTemplateProps {
   partners: Array<{ label: string; value: string }>;
   selectedPartners: Array<{ label: string; value: string }>;
   onUpdatePartners: (tags: string[]) => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: AddPinParams) => void;
   locations: Array<{ label: string; value: string }>;
   selectedLocations: Array<{ label: string; value: string }>;
   onUpdateLocations: (tags: string[]) => void;
@@ -103,8 +103,13 @@ export const AddSexTemplate = ({
       rating,
       visibility: selectedVisibility,
       anonym,
+      partners: selectedPartners.map((p) => p.value),
+      locationName: selectedLocations.map((p) => p.value).join(", "),
     });
   };
+
+
+  console.log(partners, "partners");
 
   return (
     <View className="flex-1 bg-white">
@@ -141,10 +146,22 @@ export const AddSexTemplate = ({
                   tags={selectedPartners.map((p) => p.value)}
                   inputValue={partnersInput}
                   onInputChange={setPartnersInput}
-                  onAddTag={(tag) => onUpdatePartners([...selectedPartners.map(p => p.value), tag])}
-                  onRemoveTag={(tag) => onUpdatePartners(selectedPartners.map(p => p.value).filter(t => t !== tag))}
+                  onAddTag={(tag) =>
+                    onUpdatePartners([
+                      ...selectedPartners.map((p) => p.value),
+                      tag,
+                    ])
+                  }
+                  onRemoveTag={(tag) =>
+                    onUpdatePartners(
+                      selectedPartners
+                        .map((p) => p.value)
+                        .filter((t) => t !== tag)
+                    )
+                  }
                   placeholder="Ajouter un partenaire de crime ..."
                   filteredSuggestions={partnersFiltered}
+                  icon="account"
                 />
                 <Text className="text-black mb-2">
                   Sélectionne un de tes lieux favoris ou saisi son nom :
@@ -153,8 +170,20 @@ export const AddSexTemplate = ({
                   tags={selectedLocations.map((p) => p.value)}
                   inputValue={locationsInput}
                   onInputChange={setLocationsInput}
-                  onAddTag={(tag) => onUpdateLocations([...selectedLocations.map(p => p.value), tag])}
-                  onRemoveTag={(tag) => onUpdateLocations(selectedLocations.map(p => p.value).filter(t => t !== tag))}
+                  icon="map-marker"
+                  onAddTag={(tag) =>
+                    onUpdateLocations([
+                      ...selectedLocations.map((p) => p.value),
+                      tag,
+                    ])
+                  }
+                  onRemoveTag={(tag) =>
+                    onUpdateLocations(
+                      selectedLocations
+                        .map((p) => p.value)
+                        .filter((t) => t !== tag)
+                    )
+                  }
                   placeholder="Ajouter un lieu de tes ébats ..."
                   filteredSuggestions={locationsFiltered}
                 />

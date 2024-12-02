@@ -6,6 +6,7 @@ import {
   ScrollView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { GlyphMap } from "@expo/vector-icons/build/createIconSet";
 
 interface TagInputProps {
   tags: string[];
@@ -16,6 +17,7 @@ interface TagInputProps {
   placeholder?: string;
   suggestions?: string[];
   filteredSuggestions: string[];
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
 }
 
 export const TagInput = ({
@@ -26,7 +28,10 @@ export const TagInput = ({
   onRemoveTag,
   placeholder,
   filteredSuggestions = [],
+  icon,
 }: TagInputProps) => {
+  console.log(filteredSuggestions);
+  console.log(tags);
   return (
     <View className="mb-6">
       <View className="flex-row flex-wrap gap-2 mb-2">
@@ -80,7 +85,7 @@ export const TagInput = ({
                   className="p-3 border-b border-gray-100 flex-row items-center"
                 >
                   <MaterialCommunityIcons
-                    name="account"
+                    name={icon}
                     size={20}
                     color="#666"
                   />
