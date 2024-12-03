@@ -64,6 +64,11 @@
         "projectId": "f90e4201-63d6-4f34-8704-b78e6765c2ad"
       }
     },
-    "owner": "simats"
+    "owner": "simats",
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }

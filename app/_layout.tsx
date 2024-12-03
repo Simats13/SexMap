@@ -4,10 +4,11 @@ import * as Linking from "expo-linking";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FilterProvider } from "@/contexts/FilterContext";
 import * as Notifications from 'expo-notifications';
-import { Platform, View } from 'react-native';
+import { Platform, View, Alert } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import CustomSplash from '@/components/SplashScreen';
+import * as Updates from 'expo-updates';
 
 // Maintenir le splash screen visible pendant le chargement
 SplashScreen.preventAutoHideAsync();
@@ -84,6 +85,38 @@ export default function RootLayout() {
       Notifications.removeNotificationSubscription(responseListener);
     };
   }, []);
+
+  useEffect(() => {
+    checkForUpdates();
+  }, []);
+
+  async function checkForUpdates() {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        Alert.alert(
+          'Mise à jour disponible',
+          'Une nouvelle version est disponible. Voulez-vous mettre à jour maintenant ?',
+          [
+            { text: 'Plus tard', style: 'cancel' },
+            {
+              text: 'Mettre à jour',
+              onPress: async () => {
+                try {
+                  await Updates.fetchUpdateAsync();
+                  await Updates.reloadAsync();
+                } catch (error) {
+                  Alert.alert('Erreur', 'Impossible de mettre à jour l\'application');
+                }
+              },
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      console.log('Erreur lors de la vérification des mises à jour:', error);
+    }
+  }
 
   // Afficher rien pendant le chargement initial
   if (!appIsReady) {
