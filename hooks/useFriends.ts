@@ -11,7 +11,7 @@ interface UserData {
   friendsPending: string[];
   friendsRequest: string[];
   email: string;
-  linkId: string;
+  linkId: string[];
   locationsList: string[];
   partners: string[];
   uid: string;

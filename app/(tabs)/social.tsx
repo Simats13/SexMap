@@ -43,34 +43,62 @@ export default function Social() {
   const router = useRouter();
 
   const getDisplayName = async (userId: string) => {
-    const userDoc = await getDoc(doc(db, "users", userId));
-    return userDoc.data()?.display_name;
+    try {
+      if (!userId) {
+        console.warn("ID utilisateur manquant");
+        return "Utilisateur inconnu";
+      }
+
+      const userDoc = await getDoc(doc(db, "users", userId));
+      if (!userDoc.exists()) {
+        console.warn(`Aucun utilisateur trouvé pour l'ID: ${userId}`);
+        return "Utilisateur inconnu";
+      }
+
+      const userData = userDoc.data();
+      return userData?.display_name || "Utilisateur inconnu";
+    } catch (error) {
+      console.log(
+        "Erreur lors de la récupération du nom d'utilisateur:",
+        error
+      );
+      return "Utilisateur inconnu";
+    }
   };
 
   const fetchPins = async () => {
     try {
       const pinsRef = collection(db, "maps");
       const userDoc = await getDoc(doc(db, "users", user?.uid || ""));
-      const friendsList = userDoc.data()?.friendsList || [];
+      const friendsList = userDoc.exists()
+        ? userDoc.data()?.friendsList || []
+        : [];
 
       const personalQuery = query(
         pinsRef,
-        where("link", "in", [deviceId, user?.uid || ""]),
-        where("visibility", "in", ["private", "public", "friends"])
+        where("visibility", "in", ["private", "public", "friends"]),
+        where("link", "==", deviceId),
+        where("userId", "==", user?.uid || "")
       );
+
+      const testPersonal = await getDocs(personalQuery);
+      console.log(testPersonal.docs.map((doc) => doc.data()));
+
+      let friendsQuery;
+      if (friendsList.length > 0) {
+        friendsQuery = query(
+          pinsRef,
+          where("userId", "in", friendsList),
+          where("visibility", "in", ["public", "friends"])
+        );
+      }
 
       const [personalSnap, friendsSnap] = await Promise.all([
         getDocs(personalQuery),
-        friendsList.length > 0
-          ? getDocs(
-              query(
-                pinsRef,
-                where("userId", "in", friendsList),
-                where("visibility", "in", ["public", "friends"])
-              )
-            )
-          : getDocs(query(pinsRef, where("visibility", "==", "public"))),
+        friendsQuery ? getDocs(friendsQuery) : Promise.resolve({ docs: [] }),
       ]);
+
+
 
       const allPins = await Promise.all(
         [
@@ -269,6 +297,8 @@ export default function Social() {
       </View>
     );
   }
+
+  console.log(pins);
 
   return (
     <View className="flex-1 bg-gray-100">

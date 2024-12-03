@@ -1,5 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { doc, getDoc, onSnapshot, DocumentSnapshot, DocumentData } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  onSnapshot,
+  DocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,7 +17,7 @@ interface UserData {
   friendsPending: string[];
   friendsRequest: string[];
   email: string;
-  linkId: string;
+  linkId: string[];
   locationsList: string[];
   partners: string[];
   uid: string;
@@ -49,7 +55,9 @@ export const useFriendRequests = (userId: string | undefined) => {
       const requests = await Promise.all(
         friendsRequest.map(async (friendId: string) => {
           const friendDocRef = doc(db, "users", friendId);
-          const friendDocSnap: DocumentSnapshot<DocumentData> = await getDoc(friendDocRef);
+          const friendDocSnap: DocumentSnapshot<DocumentData> = await getDoc(
+            friendDocRef
+          );
           const friendData = friendDocSnap.data() as UserData | undefined;
 
           if (!friendData) return null;
@@ -65,4 +73,4 @@ export const useFriendRequests = (userId: string | undefined) => {
     },
     enabled: !!userId,
   });
-}; 
+};

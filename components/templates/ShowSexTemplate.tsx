@@ -18,19 +18,19 @@ import { User } from "firebase/auth";
 interface ShowSexTemplateProps {
   pin: {
     id: string;
-    title: string;
     location: {
       latitude: number;
       longitude: number;
     };
-    createdAt: Date;
-    userId: string;
+    date: Date;
+    link: string;
+    rating: number;
+    solo: boolean;
+    likes: string[];
+    name?: string;
     description?: string;
     partners?: string[];
-    rating?: number;
-    name?: string;
-    solo: boolean;
-    like: string[];
+    locationName?: string;
   };
   onShare: () => void;
   onLike: () => void;
@@ -45,7 +45,7 @@ export const ShowSexTemplate = ({
 }: ShowSexTemplateProps) => {
   const router = useRouter();
   const [address, setAddress] = useState<string>("");
-  const isLiked = user && pin.like ? pin.like.includes(user.uid) : false;
+  const isLiked = user && pin.likes ? pin.likes.includes(user.uid) : false;
 
   useEffect(() => {
     const getAddress = async () => {
@@ -95,8 +95,8 @@ export const ShowSexTemplate = ({
           <View className="mb-8 bg-white rounded-xl shadow-md p-4">
             <View className="flex-row items-center mb-2">
               {pin.name && (
-                <Text className="text-lg font-semibold text-gray-800 mb-3">
-                  Le crime a été commis par {pin.name}
+                <Text className="text-sm font-semibold text-gray-800 mb-3">
+                  Le crime a été commis par {pin.name} {pin.locationName ? `à ${pin.locationName}` : ""}
                 </Text>
               )}
             </View>
@@ -128,9 +128,9 @@ export const ShowSexTemplate = ({
               </Text>
             </View>
             <Text className="text-gray-600 text-base">
-              {format(pin.createdAt, "PPPp", { locale: fr })}
+              {format(pin.date, "PPPp", { locale: fr })}
             </Text>
-            {pin.partners && !pin.solo && (
+            {!pin.solo && pin.partners && pin.partners.length > 0 && (
               <>
                 <View className="flex-row items-center mb-2 mt-4">
                   <Feather name="users" size={20} color="#4B5563" />

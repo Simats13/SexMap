@@ -105,16 +105,17 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
             userId: user.uid,
           }
         : {
-            // Données pour utilisateur non connecté
             date: params.date,
             description: params.description,
             link: deviceId,
+            likes: [],
             location: new GeoPoint(
               params.location.latitude,
               params.location.longitude
             ),
             rating: params.rating,
             visibility: params.visibility,
+            solo: params.solo,
           };
 
       const docRef = await addDoc(collection(db, "maps"), pinData);

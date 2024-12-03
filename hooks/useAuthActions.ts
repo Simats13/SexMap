@@ -95,9 +95,13 @@ export const useAuthActions = () => {
 
       await validateSignUp({ username, email, password, confirmPassword });
 
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(user, { 
-        displayName: username
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(user, {
+        displayName: username,
       });
 
       await setDoc(doc(db, "users", user.uid), {
@@ -108,7 +112,7 @@ export const useAuthActions = () => {
         friendsList: [],
         friendsPending: [],
         friendsRequest: [],
-        linkId: deviceId,
+        linkId: [deviceId],
         locationsList: [],
         partners: [],
       });
