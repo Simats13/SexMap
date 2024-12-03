@@ -187,28 +187,34 @@ export const AddSexTemplate = ({
               </>
             )}
 
-            <Text className="text-black mb-2">
-              Sélectionne un de tes lieux favoris ou saisi son nom :
-            </Text>
-            <TagInput
-              tags={selectedLocations.map((p) => p.value)}
-              inputValue={locationsInput}
-              onInputChange={setLocationsInput}
-              icon="map-marker"
-              onAddTag={(tag) =>
-                onUpdateLocations([
-                  ...selectedLocations.map((p) => p.value),
-                  tag,
-                ])
-              }
-              onRemoveTag={(tag) =>
-                onUpdateLocations(
-                  selectedLocations.map((p) => p.value).filter((t) => t !== tag)
-                )
-              }
-              placeholder="Ajouter un lieu de tes ébats ..."
-              filteredSuggestions={locationsFiltered}
-            />
+            {user && (
+              <>
+                <Text className="text-black mb-2">
+                  Sélectionne un de tes lieux favoris ou saisi son nom :
+                </Text>
+                <TagInput
+                  tags={selectedLocations.map((p) => p.value)}
+                  inputValue={locationsInput}
+                  onInputChange={setLocationsInput}
+                  icon="map-marker"
+                  onAddTag={(tag) =>
+                    onUpdateLocations([
+                      ...selectedLocations.map((p) => p.value),
+                      tag,
+                    ])
+                  }
+                  onRemoveTag={(tag) =>
+                    onUpdateLocations(
+                      selectedLocations
+                        .map((p) => p.value)
+                        .filter((t) => t !== tag)
+                    )
+                  }
+                  placeholder="Ajouter un lieu de tes ébats ..."
+                  filteredSuggestions={locationsFiltered}
+                />
+              </>
+            )}
 
             <View>
               <Text className="text-gray-700 mb-2">

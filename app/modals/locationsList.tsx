@@ -18,7 +18,7 @@ export default function LocationsList() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [locationName, setLocationName] = useState("");
 
-  const { data: favoriteLocations = [] } = useFavoriteLocations(user?.uid);
+  const { data: favoriteLocations } = useFavoriteLocations(user?.uid);
   const { mutate: addLocation } = useAddFavoriteLocation();
   const { mutate: deleteLocation } = useDeleteFavoriteLocation();
 
@@ -42,27 +42,29 @@ export default function LocationsList() {
       />
 
       <ScrollView className="flex-1 p-4">
-        {favoriteLocations.length === 0 ? (
+        {(!favoriteLocations?.locationsList || favoriteLocations.locationsList.length === 0) ? (
           <EmptyState
             icon="map-marker"
             message="Vous n'avez pas encore de lieux favoris. Ajoutez des lieux pour les retrouver facilement !"
           />
         ) : (
           <View className="space-y-2">
-            {favoriteLocations.map((location) => (
+            {favoriteLocations.locationsList.map((location, index) => (
               <View
-                key={location.id}
+                key={index}
                 className="flex-row justify-between items-center bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
               >
                 <View>
                   <Text className="text-lg font-semibold text-gray-800">
-                    {location.name}
+                    {location}
                   </Text>
-                  {location.address && (
-                    <Text className="text-gray-600">{location.address}</Text>
-                  )}
                 </View>
-                <TouchableOpacity onPress={() => deleteLocation(location.id)}>
+                <TouchableOpacity 
+                  onPress={() => deleteLocation({ 
+                    userId: user!.uid, 
+                    name: location 
+                  })}
+                >
                   <Ionicons name="trash-outline" size={20} color="#EF4444" />
                 </TouchableOpacity>
               </View>

@@ -8,28 +8,27 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  getDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 
 export type FavoriteLocation = {
-  id: string;
-  name: string;
-  address: string;
+  locationsList: string[];
 };
 
 export function useFavoriteLocations(userId: string | undefined) {
   return useQuery({
     queryKey: ["favoriteLocations", userId],
-    queryFn: async (): Promise<FavoriteLocation[]> => {
-      if (!userId) return [];
-      const q = query(
-        collection(db, "favoriteLocations"),
-        where("userId", "==", userId)
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<FavoriteLocation, "id">),
-      }));
+    queryFn: async (): Promise<FavoriteLocation> => {
+      if (!userId) return { locationsList: [] };
+      const userDoc = doc(db, "users", userId);
+      const snapshot = await getDoc(userDoc);
+      if (!snapshot.exists()) {
+        return { locationsList: [] };
+      }
+      return snapshot.data() as FavoriteLocation;
     },
     enabled: !!userId,
   });
@@ -40,10 +39,9 @@ export function useAddFavoriteLocation() {
 
   return useMutation({
     mutationFn: async ({ userId, name }: { userId: string; name: string }) => {
-      await addDoc(collection(db, "favoriteLocations"), {
-        userId,
-        name,
-        createdAt: new Date(),
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        locationsList: arrayUnion(name)
       });
     },
     onSuccess: () => {
@@ -56,8 +54,11 @@ export function useDeleteFavoriteLocation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (locationId: string) => {
-      await deleteDoc(doc(db, "favoriteLocations", locationId));
+    mutationFn: async ({ userId, name }: { userId: string; name: string }) => {
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        locationsList: arrayRemove(name)
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favoriteLocations"] });

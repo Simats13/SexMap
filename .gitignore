@@ -10,3 +10,5 @@ sexmap_env.sh
 .expo/*
 .expo
 .env
+android
+ios
