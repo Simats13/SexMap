@@ -13,3 +13,4 @@ sexmap_env.sh
 android
 ios
 dist
+.DS_Store

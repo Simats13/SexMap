@@ -10,6 +10,7 @@ import { FriendsTemplate } from "@/components/templates/FriendsTemplate";
 import { Friend } from "@/components/templates/FriendsTemplate";
 import { collection, query, where, getDocs, getDoc } from "firebase/firestore";
 import { usePushNotification } from "@/hooks/usePushNotification";
+import { Alert } from "react-native";
 
 type TabType = "added" | "pending";
 
@@ -75,7 +76,7 @@ export default function FriendsListModal() {
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        alert("Utilisateur non trouvé");
+        Alert.alert("Erreur", "Utilisateur non trouvé");
         return;
       }
 
@@ -86,17 +87,17 @@ export default function FriendsListModal() {
       const userData = userDoc.data();
 
       if (userData?.friendsList?.includes(friendId)) {
-        alert("Cette personne est déjà dans vos SexPartner");
+        Alert.alert("Erreur", "Cette personne est déjà dans vos SexPartner");
         return;
       }
 
       if (userData?.friendsPending?.includes(friendId)) {
-        alert("Demande déjà envoyée à cette personne");
+        Alert.alert("Erreur", "Demande déjà envoyée à cette personne");
         return;
       }
 
       if (userData?.friendsRequest?.includes(friendId)) {
-        alert("Cette personne vous a déjà envoyé une demande");
+        Alert.alert("Erreur", "Cette personne vous a déjà envoyé une demande");
         return;
       }
 
@@ -114,10 +115,10 @@ export default function FriendsListModal() {
         `${user.displayName} vous a envoyé une demande de SexPartner`
       );
 
-      alert("Demande de SexPartner envoyée !");
+      Alert.alert("Succès", "Demande de SexPartner envoyée !");
     } catch (error) {
       console.error("Erreur lors de l'ajout de SexPartner:", error);
-      alert("Une erreur est survenue lors de l'envoi de la demande");
+      Alert.alert("Erreur", "Une erreur est survenue lors de l'envoi de la demande");
     }
   };
 

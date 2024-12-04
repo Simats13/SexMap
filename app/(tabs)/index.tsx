@@ -4,6 +4,10 @@ import {
   TouchableOpacity,
   Linking,
   ScrollView,
+  Image,
+  Pressable,
+  StyleSheet,
+  Animated,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useQuery } from "@tanstack/react-query";
@@ -17,11 +21,24 @@ import { MotiView } from "moti";
 
 interface Pin {
   id: string;
-  title: string;
+  title?: string;
   location: {
     latitude: number;
     longitude: number;
   };
+}
+
+interface GroupedPin {
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
+  pins: Pin[];
+}
+
+interface AnimatedMarkerProps {
+  group: GroupedPin;
+  onPress: () => void;
 }
 
 const LocationDisabledView = () => (
@@ -102,6 +119,64 @@ const LocationDisabledView = () => (
   </ScrollView>
 );
 
+// Ajoutez cette fonction pour calculer la précision en fonction du zoom
+const getClusterPrecision = (region: MapRegion) => {
+  const { latitudeDelta } = region;
+  if (latitudeDelta > 0.5) return 1; // Très zoomé out
+  if (latitudeDelta > 0.1) return 2;
+  if (latitudeDelta > 0.05) return 3;
+  if (latitudeDelta > 0.01) return 4;
+  return 5; // Très zoomé in
+};
+
+// Dans le composant Index, ajoutez cette fonction pour l'animation
+const AnimatedMarker = ({ group, onPress }: AnimatedMarkerProps) => {
+  const animatedValue = new Animated.Value(0);
+
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => onPress());
+  };
+
+  const animatedStyle = {
+    transform: [
+      {
+        scale: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 0.8],
+        }),
+      },
+    ],
+  };
+
+  return (
+    <Marker coordinate={group.coordinate} onPress={handlePress}>
+      <Animated.View style={animatedStyle} className="relative">
+        <View className="bg-red-50 rounded-full p-3">
+          <Feather name="map-pin" size={24} color="#FF1744" />
+        </View>
+        {group.pins.length > 1 && (
+          <View className="absolute -top-1 -right-1 bg-white rounded-full w-5 h-5 justify-center items-center border border-red-500">
+            <Text className="text-red-500 text-xs font-bold">
+              {group.pins.length}
+            </Text>
+          </View>
+        )}
+      </Animated.View>
+    </Marker>
+  );
+};
+
 export default function Index() {
   const { filter } = useFilter();
   const [userLocation, setUserLocation] =
@@ -176,6 +251,33 @@ export default function Index() {
       searchInArea(mapRegion);
     }
   }, [filter]);
+
+  // Modifiez la fonction de regroupement
+  const groupPinsByLocation = (
+    pins: Pin[],
+    region: MapRegion
+  ): GroupedPin[] => {
+    const groups: Record<string, Pin[]> = {};
+    const precision = getClusterPrecision(region);
+
+    pins?.forEach((pin) => {
+      const key = `${pin.location.latitude.toFixed(
+        precision
+      )},${pin.location.longitude.toFixed(precision)}`;
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(pin);
+    });
+
+    return Object.entries(groups).map(([key, groupPins]) => ({
+      coordinate: {
+        latitude: parseFloat(key.split(",")[0]),
+        longitude: parseFloat(key.split(",")[1]),
+      },
+      pins: groupPins,
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -252,20 +354,23 @@ export default function Index() {
         }}
         onRegionChangeComplete={handleRegionChange}
       >
-        {pins?.map((pin) => (
-          <Marker
-            key={pin.id}
-            coordinate={{
-              latitude: pin.location.latitude,
-              longitude: pin.location.longitude,
-            }}
-            title={pin.title}
-            onPress={() => {
-              router.push(`/modals/showSex?id=${pin.id}`);
-            }}
-            pinColor="#FF69B4"
-          />
-        ))}
+        {mapRegion &&
+          groupPinsByLocation(pins, mapRegion).map((group, index) => (
+            <AnimatedMarker
+              key={index}
+              group={group}
+              onPress={() => {
+                if (group.pins.length > 1) {
+                  router.push({
+                    pathname: "/modals/groupedPins",
+                    params: { pins: JSON.stringify(group.pins) },
+                  });
+                } else {
+                  router.push(`/modals/showSex?id=${group.pins[0].id}`);
+                }
+              }}
+            />
+          ))}
       </MapView>
 
       <TouchableOpacity

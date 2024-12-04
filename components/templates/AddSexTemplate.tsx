@@ -1,5 +1,5 @@
 import { User } from "firebase/auth";
-import { ScrollView, View, Text, Switch, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, Switch, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { Header } from "../organisms/Header";
 import { SelectButton } from "../molecules/SelectButton";
 import { DatePickerButton } from "../molecules/DatePickerButton";
@@ -113,9 +113,18 @@ export const AddSexTemplate = ({
 
   return (
     <View className="flex-1 bg-white">
-      <View className="flex-1">
-        <Header title="Ajouter un SexPin" onClose={onClose} />
-        <ScrollView className="flex-1">
+      <Header title="Ajouter un SexPin" onClose={onClose} />
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView 
+          className="flex-1"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          automaticallyAdjustKeyboardInsets={true}
+        >
           <View className="p-4">
             <View className="mb-6">
               <Text className="text-gray-700 mb-2">
@@ -152,7 +161,7 @@ export const AddSexTemplate = ({
                       !isSolo ? "text-red-500" : "text-gray-700"
                     }`}
                   >
-                    À plusieurs 🤝🏻
+                     plusieurs 🤝🏻
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -250,11 +259,18 @@ export const AddSexTemplate = ({
               <Input
                 multiline
                 numberOfLines={4}
-                placeholder="Raconter une anecdotre croustillante, comment ça s'est passé, quel était l'état dans lequel vous étiez..."
-                className="h-32"
                 textAlignVertical="top"
                 value={description}
                 onChangeText={setDescription}
+                placeholder="Description (optionnelle)"
+                style={{ 
+                  height: 120,
+                  marginBottom: 20,
+                  textAlignVertical: 'top',
+                  paddingTop: 10,
+                  paddingHorizontal: 10,
+                  backgroundColor: '#fff'
+                }}
               />
             </View>
 
@@ -294,27 +310,27 @@ export const AddSexTemplate = ({
             )}
           </View>
         </ScrollView>
-      </View>
 
-      <DateTimePickerModal
-        isVisible={showDatePicker}
-        onClose={() => setShowDatePicker(false)}
-        date={date}
-        onConfirm={(newDate) => {
-          setDate(newDate);
-          setShowDatePicker(false);
-        }}
-      />
+        <DateTimePickerModal
+          isVisible={showDatePicker}
+          onClose={() => setShowDatePicker(false)}
+          date={date}
+          onConfirm={(newDate) => {
+            setDate(newDate);
+            setShowDatePicker(false);
+          }}
+        />
 
-      <VisibilityPickerModal
-        isVisible={showPicker}
-        onClose={() => setShowPicker(false)}
-        selectedValue={selectedVisibility}
-        onConfirm={(value) => {
-          setSelectedVisibility(value as "public" | "private" | "friends");
-          setShowPicker(false);
-        }}
-      />
+        <VisibilityPickerModal
+          isVisible={showPicker}
+          onClose={() => setShowPicker(false)}
+          selectedValue={selectedVisibility}
+          onConfirm={(value) => {
+            setSelectedVisibility(value as "public" | "private" | "friends");
+            setShowPicker(false);
+          }}
+        />
+      </KeyboardAvoidingView>
     </View>
   );
 };
