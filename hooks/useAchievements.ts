@@ -174,7 +174,7 @@ export const useAchievements = (userId?: string) => {
       // Récupérer les succès déjà notifiés
       const notifiedKey = `notified_achievements_${userId}`;
       const notifiedAchievements = JSON.parse(
-        await AsyncStorage.getItem(notifiedKey) || "[]"
+        (await AsyncStorage.getItem(notifiedKey)) || "[]"
       );
 
       const newAchievements = ACHIEVEMENTS.filter((achievement) => {
@@ -202,7 +202,10 @@ export const useAchievements = (userId?: string) => {
       if (newAchievements.length > 0) {
         await AsyncStorage.setItem(
           notifiedKey,
-          JSON.stringify([...notifiedAchievements, ...newAchievements.map(a => a.id)])
+          JSON.stringify([
+            ...notifiedAchievements,
+            ...newAchievements.map((a) => a.id),
+          ])
         );
       }
 

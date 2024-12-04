@@ -12,3 +12,4 @@ sexmap_env.sh
 .env
 android
 ios
+dist

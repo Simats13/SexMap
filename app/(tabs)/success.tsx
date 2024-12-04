@@ -1,8 +1,9 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { useAuth } from "@/hooks/useAuth";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 
 const AchievementCard = ({ achievement }: { achievement: any }) => (
   <View className="bg-white rounded-lg p-4 mb-4 shadow-sm">
@@ -41,8 +42,15 @@ const AchievementCard = ({ achievement }: { achievement: any }) => (
 
 export default function Success() {
   const { data: user } = useAuth();
-  const { data: achievementsData, isLoading } = useAchievements(user?.uid);
+  const { data: achievementsData, isLoading, refetch } = useAchievements(user?.uid);
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   if (!user) {
     return (
@@ -116,6 +124,9 @@ export default function Success() {
     <ScrollView
       className="flex-1 bg-gray-50"
       contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       <View className="mb-6">
         <Text className="text-2xl font-bold text-gray-800 mb-2">

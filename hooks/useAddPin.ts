@@ -100,7 +100,7 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
             ),
             locationName: params.locationName,
             partners: params.partners || [],
-            rating: params.rating,
+            rating: params.rating || 1,
             visibility: params.visibility,
             userId: user.uid,
           }
@@ -113,7 +113,7 @@ export const useAddPin = (onPinAdded?: (newPin: Pin) => void) => {
               params.location.latitude,
               params.location.longitude
             ),
-            rating: params.rating,
+            rating: params.rating || 1,
             visibility: params.visibility,
             solo: params.solo,
           };
