@@ -73,7 +73,7 @@ export const ShowSexTemplate = ({
   return (
     <View className="flex-1 bg-white">
       <Header
-        title="Détails du SexPin"
+        title="Détails du LovePin"
         onClose={() => router.back()}
         rightElement={
           <View className="flex-row items-center">

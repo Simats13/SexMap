@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "SexMap",
+    "name": "LoveMap",
     "slug": "sexmap",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "sexmap",
+    "scheme": "lovemap",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,22 +15,22 @@
     "ios": {
       "supportsTablet": true,
       "userInterfaceStyle": "dark",
-      "bundleIdentifier": "com.sexmap.off",
-      "associatedDomains": ["applinks:sexmap.off"]
+      "bundleIdentifier": "com.lovemap.off",
+      "associatedDomains": ["applinks:lovemap.off"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.sexmap.off",
+      "package": "com.loveMap.off",
       "intentFilters": [
         {
           "action": "VIEW",
           "data": [
             {
-              "scheme": "sexmap",
-              "host": "sexmap.com",
+              "scheme": "lovemap",
+              "host": "lovemap.com",
               "pathPrefix": "/"
             }
           ],

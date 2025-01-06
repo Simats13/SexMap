@@ -97,18 +97,18 @@ export const useAuthActions = () => {
 
       const { user } = await createUserWithEmailAndPassword(
         auth,
-        email,
+        email.trim(),
         password
       );
       await updateProfile(user, {
-        displayName: username,
+        displayName: username?.trim(),
       });
 
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         created_time: new Date(),
-        display_name: username,
-        email: email,
+        display_name: username?.trim(),
+        email: email.trim(),
         friendsList: [],
         friendsPending: [],
         friendsRequest: [],

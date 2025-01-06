@@ -53,7 +53,7 @@ export default function Profile() {
   const handleShare = async () => {
     if (!user) return;
     try {
-      const shareLink = `Hey ajoute moi dès maintenant sur SexMap via ce lien : sexmap://sexmap.com/addFriend/${user.displayName}`;
+      const shareLink = `Hey ajoute moi dès maintenant sur LoveMap via ce lien : lovemap://lovemap.com/addFriend/${user.displayName}`;
       await Share.share({
         message: shareLink,
       });

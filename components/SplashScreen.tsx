@@ -72,7 +72,7 @@ export default function CustomSplash() {
         style={titleStyle}
         className="text-white text-6xl font-bold mb-8"
       >
-        SexMap
+        LoveMap
       </Animated.Text>
 
       <Animated.View

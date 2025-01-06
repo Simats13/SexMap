@@ -145,7 +145,7 @@ export const FriendsTemplate = ({
         <View className="flex-1 bg-black/50 justify-center items-center p-4">
           <View className="bg-white w-full max-w-sm rounded-lg p-4">
             <Text className="text-xl font-bold mb-4">
-              Ajouter un SexPartner
+              Ajouter un LovePartner
             </Text>
             <Input
               placeholder="Nom d'utilisateur"

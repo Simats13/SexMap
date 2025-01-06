@@ -33,14 +33,14 @@ export const FiltersTemplate = ({
     icon: IconName;
     disabled?: boolean;
   }[] = [
-    { type: "public", label: "SexPins publics", icon: "earth" },
+    { type: "public", label: "LovePins publics", icon: "earth" },
     {
       type: "friends",
-      label: "SexPins des amis",
+      label: "LovePins des amis",
       icon: "account-group",
       disabled: !user || !hasFriends,
     },
-    { type: "private", label: "Mes SexPins", icon: "lock" },
+    { type: "private", label: "Mes LovePins", icon: "lock" },
   ];
 
   const handleFilterPress = (type: FilterType) => {

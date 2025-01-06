@@ -78,7 +78,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "SexMap",
+          title: "LoveMap",
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => {
             const router = useRouter();

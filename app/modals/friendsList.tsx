@@ -53,7 +53,7 @@ export default function FriendsListModal() {
     await sendPushNotification(
       [friendId],
       "Demande acceptée",
-      `${user.displayName} a accepté votre demande de SexPartner`
+      `${user.displayName} a accepté votre demande de LovePartner`
     );
   };
 
@@ -87,7 +87,7 @@ export default function FriendsListModal() {
       const userData = userDoc.data();
 
       if (userData?.friendsList?.includes(friendId)) {
-        Alert.alert("Erreur", "Cette personne est déjà dans vos SexPartner");
+        Alert.alert("Erreur", "Cette personne est déjà dans vos LovePartner");
         return;
       }
 
@@ -111,13 +111,13 @@ export default function FriendsListModal() {
 
       await sendPushNotification(
         [friendId],
-        "Demande de SexPartner",
-        `${user.displayName} vous a envoyé une demande de SexPartner`
+        "Demande de LovePartner",
+        `${user.displayName} vous a envoyé une demande de LovePartner`
       );
 
-      Alert.alert("Succès", "Demande de SexPartner envoyée !");
+      Alert.alert("Succès", "Demande de LovePartner envoyée !");
     } catch (error) {
-      console.error("Erreur lors de l'ajout de SexPartner:", error);
+      console.error("Erreur lors de l'ajout de LovePartner:", error);
       Alert.alert("Erreur", "Une erreur est survenue lors de l'envoi de la demande");
     }
   };

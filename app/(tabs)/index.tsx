@@ -53,7 +53,7 @@ const LocationDisabledView = () => (
             Localisation désactivée
           </Text>
           <Text className="text-gray-600 text-center mb-4">
-            Active ta position pour découvrir les SexPins près de chez toi et
+            Active ta position pour découvrir les LovePins près de chez toi et
             partager tes expériences
           </Text>
         </View>
@@ -71,7 +71,7 @@ const LocationDisabledView = () => (
             <View className="flex-row items-center p-4 bg-gray-50 mb-2 rounded-lg">
               <View className="flex-1">
                 <Text className="text-gray-800 font-medium mb-1">
-                  SexPin à proximité
+                  LovePin à proximité
                 </Text>
                 <View className="flex-row items-center">
                   <Feather

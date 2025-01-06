@@ -113,7 +113,7 @@ export const AddSexTemplate = ({
 
   return (
     <View className="flex-1 bg-white">
-      <Header title="Ajouter un SexPin" onClose={onClose} />
+      <Header title="Ajouter un LovePin" onClose={onClose} />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -299,7 +299,7 @@ export const AddSexTemplate = ({
             </View>
 
             <Button
-              title="Envoyer mon SexPin 📍"
+              title="Envoyer mon LovePin 📍"
               onPress={handleSubmit}
               loading={loading}
               className="mt-4"

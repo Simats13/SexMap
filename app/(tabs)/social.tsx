@@ -222,7 +222,7 @@ export default function Social() {
                 />
               </View>
               <Text className="text-2xl font-bold text-gray-800 text-center mb-2">
-                Découvre les SexPins
+                Découvre les LovePins
               </Text>
               <Text className="text-gray-600 text-center mb-4">
                 Rejoins la communauté et explore les lieux les plus excitants
@@ -317,10 +317,10 @@ export default function Social() {
         ListEmptyComponent={
           <View className="flex-1 justify-center items-center">
             <Text className="text-lg text-gray-800 mb-4 text-center">
-              Aucun SexPin pour le moment
+              Aucun LovePin pour le moment
             </Text>
             <Button
-              title="Ajouter un SexPin"
+              title="Ajouter un LovePin"
               onPress={() => router.push("/modals/addSex")}
             />
           </View>

@@ -35,7 +35,7 @@ const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: "first_friend",
-    title: "Premier SexPartner",
+    title: "Premier LovePartner",
     description: "Ajouter votre premier ami",
     icon: "person-add",
     condition: 1,

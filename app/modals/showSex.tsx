@@ -192,7 +192,7 @@ export default function ShowSexModal() {
   const onShare = () => {
     try {
       Share.share({
-        message: `Hey, j'ai trouvé ce SexPin sur SexMap : sexmap://pin/${id}`,
+        message: `Hey, j'ai trouvé ce LovePin sur LoveMap : lovemap://pin/${id}`,
       });
     } catch (error) {
       console.error("Erreur lors du share:", error);
