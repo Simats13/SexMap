@@ -15,22 +15,22 @@
     "ios": {
       "supportsTablet": true,
       "userInterfaceStyle": "dark",
-      "bundleIdentifier": "com.lovemap.off",
-      "associatedDomains": ["applinks:lovemap.off"]
+      "bundleIdentifier": "com.lovemap.app",
+      "associatedDomains": ["applinks:lovemap.app"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.loveMap.off",
+      "package": "com.lovemap.app",
       "intentFilters": [
         {
           "action": "VIEW",
           "data": [
             {
               "scheme": "lovemap",
-              "host": "lovemap.com",
+              "host": "lovemap.app",
               "pathPrefix": "/"
             }
           ],
@@ -57,6 +57,16 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Permettez à $(PRODUCT_NAME) d'utiliser votre position pour afficher les points d'intérêt près de vous."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "gradleProperties": {
+              "org.gradle.java.home": "/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+            }
+          }
         }
       ]
     ],

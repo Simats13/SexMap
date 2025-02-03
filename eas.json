@@ -6,14 +6,28 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "channel": "development",
+      "android": {
+        "gradleCommand": ":app:assembleDebug",
+        "env": {
+          "JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
+          "ANDROID_HOME": "/Users/$USER/Library/Android/sdk"
+        }
+      }
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview"
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "android": {
+        "gradleCommand": ":app:assembleRelease",
+        "env": {
+          "JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
+          "ANDROID_HOME": "/Users/$USER/Library/Android/sdk"
+        }
+      }
     }
   },
   "submit": {

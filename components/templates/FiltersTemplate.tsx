@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import { Snackbar } from "@/components/atoms/Snackbar";
 import { useState } from "react";
 
-
 type FilterType = "public" | "friends" | "private";
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
 
@@ -80,7 +79,7 @@ export const FiltersTemplate = ({
                 color="#666"
                 className="mr-3"
               />
-              <Text className="flex-1 text-gray-700 font-medium">{label}</Text>
+              <Text className="text-lg font-semibold">{label}</Text>
               {disabled && (
                 <MaterialCommunityIcons name="lock" size={20} color="#666" />
               )}

@@ -161,7 +161,7 @@ export const AddSexTemplate = ({
                       !isSolo ? "text-red-500" : "text-gray-700"
                     }`}
                   >
-                     plusieurs 🤝🏻
+                     Plusieurs 🤝🏻
                   </Text>
                 </TouchableOpacity>
               </View>
