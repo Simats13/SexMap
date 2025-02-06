@@ -1622,26 +1622,6 @@
   resolved "https://registry.npmjs.org/@firebase/webchannel-wrapper/-/webchannel-wrapper-1.0.1.tgz"
   integrity sha512-jmEnr/pk0yVkA7mIlHNnxCi+wWzOFUg0WyIotgkKAb2u1J7fAeDBcVNSTjTihbAYNusCLQdW5s9IJ5qwnEufcQ==
 
-"@fortawesome/fontawesome-common-types@6.7.1":
-  version "6.7.1"
-  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.1.tgz"
-  integrity sha512-gbDz3TwRrIPT3i0cDfujhshnXO9z03IT1UKRIVi/VEjpNHtSBIP2o5XSm+e816FzzCFEzAxPw09Z13n20PaQJQ==
-
-"@fortawesome/fontawesome-svg-core@^6.7.1":
-  version "6.7.1"
-  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-6.7.1.tgz"
-  integrity sha512-8dBIHbfsKlCk2jHQ9PoRBg2Z+4TwyE3vZICSnoDlnsHA6SiMlTwfmW6yX0lHsRmWJugkeb92sA0hZdkXJhuz+g==
-  dependencies:
-    "@fortawesome/fontawesome-common-types" "6.7.1"
-
-"@fortawesome/react-native-fontawesome@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/@fortawesome/react-native-fontawesome/-/react-native-fontawesome-0.3.2.tgz"
-  integrity sha512-CiWfJWSZHRg12VXlaeFnaa5yJVPOrjsSFEvF6ntz3cnjg4oN3cvauL+JATacMCl0v9xzib32qC1WZAvvGkfB4w==
-  dependencies:
-    humps "^2.0.1"
-    prop-types "^15.7.2"
-
 "@grpc/grpc-js@~1.9.0":
   version "1.9.15"
   resolved "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.9.15.tgz"
@@ -1659,11 +1639,6 @@
     long "^5.0.0"
     protobufjs "^7.2.5"
     yargs "^17.7.2"
-
-"@heroicons/react@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/@heroicons/react/-/react-2.2.0.tgz"
-  integrity sha512-LMcepvRaS9LYHJGsF0zzmgKCUim/X3N/DQKc4jepAXJ7l8QxJ1PmxJzqplF2Z3FE4PqBAIGyJAQ/w4B5dsqbtQ==
 
 "@ide/backoff@^1.0.0":
   version "1.0.0"
@@ -2575,11 +2550,6 @@
   version "15.7.13"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.13.tgz"
   integrity sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==
-
-"@types/react-native-dotenv@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.npmjs.org/@types/react-native-dotenv/-/react-native-dotenv-0.2.2.tgz"
-  integrity sha512-YDgO2hdTK5PaxZrIFtVXrjeFOhJ+7A9a8VDUK4QmHCPGIB5i6DroLG9IpItX5qCshz7aPsQfgy9X3w82Otd4HA==
 
 "@types/react-test-renderer@^18.0.7":
   version "18.3.0"
@@ -4137,13 +4107,6 @@ expo-build-properties@^0.13.2:
     ajv "^8.11.0"
     semver "^7.6.0"
 
-expo-camera@~16.0.14:
-  version "16.0.14"
-  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-16.0.14.tgz#928015c6b0b29dcdcb8ebc948ef6290704d6daf0"
-  integrity sha512-nTQjb3Vtp0rA40fQdGLO+YCg7kHigBs9J4LkAXiL7Gsjl8lxYgFqHCCrFLOm/4D2TJSnqHSGQQflzwoWQDpZzw==
-  dependencies:
-    invariant "^2.2.4"
-
 expo-constants@~17.0.5:
   version "17.0.5"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-17.0.5.tgz#b5deb4a4242cd6ef1f6c68e745664f69d41a0ffb"
@@ -4151,13 +4114,6 @@ expo-constants@~17.0.5:
   dependencies:
     "@expo/config" "~10.0.8"
     "@expo/env" "~0.4.1"
-
-expo-crop-image@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.npmjs.org/expo-crop-image/-/expo-crop-image-0.2.1.tgz"
-  integrity sha512-1NeTtCS/UkUNIFUQ4s2vcEMoZXv6CXynyO+ru2jQ34cBjbEcYZ9ZeMHs6FRyA1fmmwoHCYLRpKQqsEpH2mandA==
-  dependencies:
-    recoil "0.7.3"
 
 expo-crypto@~14.0.2:
   version "14.0.2"
@@ -4225,30 +4181,6 @@ expo-font@~13.0.3:
   dependencies:
     fontfaceobserver "^2.1.0"
 
-expo-image-loader@~5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/expo-image-loader/-/expo-image-loader-5.0.0.tgz"
-  integrity sha512-Eg+5FHtyzv3Jjw9dHwu2pWy4xjf8fu3V0Asyy42kO+t/FbvW/vjUixpTjPtgKQLQh+2/9Nk4JjFDV6FwCnF2ZA==
-
-expo-image-manipulator@~13.0.6:
-  version "13.0.6"
-  resolved "https://registry.yarnpkg.com/expo-image-manipulator/-/expo-image-manipulator-13.0.6.tgz#a6d5504ec0df34c8caa53a62eac7253b2267fab9"
-  integrity sha512-Rz8Kcfx1xYm0AsIDi6zfKYUDnwCP8edgYXWb00KAkzOF8bDxwzTrnvESWhCiveM4IB3fojjLpNeENME34p3bzA==
-  dependencies:
-    expo-image-loader "~5.0.0"
-
-expo-image-picker@~16.0.5:
-  version "16.0.5"
-  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-16.0.5.tgz#fefb08f1a35980015122499fb388f2cfcbf08485"
-  integrity sha512-Rkc4vihqPN/48PV3QJkrG10Lg5s1LonKmpVnGwBSlHjRR5ngqJH++DYFndgD69hLaWrJukzCYpP3CyTMAAatWg==
-  dependencies:
-    expo-image-loader "~5.0.0"
-
-expo-image@~2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-2.0.4.tgz#52db27a489b2fc652b1dd612748366781913d93b"
-  integrity sha512-oIVSlV/BpBJbI9Anf8RjraGJXDWSJxNKxdXkYBJ31XrQaUstOM7OmsVKjOK40ZFZHIz3rx5SBJWK5w52Uz+/bg==
-
 expo-json-utils@~0.14.0:
   version "0.14.0"
   resolved "https://registry.npmjs.org/expo-json-utils/-/expo-json-utils-0.14.0.tgz"
@@ -4284,11 +4216,6 @@ expo-manifests@~0.15.5:
   dependencies:
     "@expo/config" "~10.0.8"
     expo-json-utils "~0.14.0"
-
-expo-media-library@~17.0.5:
-  version "17.0.5"
-  resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-17.0.5.tgz#26413b3486f8fddd75b71306eb1ccf9c2c0779aa"
-  integrity sha512-AHfaaNvvHtIu5X51tqp4VvwlBTtMCLeFiYLbrNxUklSop0JA2fDyZrPhtRdMGrp/wtu3gvay2NDKAp3JzczOzw==
 
 expo-modules-autolinking@2.0.7:
   version "2.0.7"
@@ -4862,11 +4789,6 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4,
   resolved "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.11.tgz"
   integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
-hamt_plus@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/hamt_plus/-/hamt_plus-1.0.2.tgz"
-  integrity sha512-t2JXKaehnMb9paaYA7J0BX8QQAY8lwfQ9Gjf4pg/mk4krt+cmwmU652HOoWonf+7+EQV97ARPMhhVgU1ra2GhA==
-
 has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz"
@@ -5012,11 +4934,6 @@ human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-2.1.0.tgz"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
-
-humps@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/humps/-/humps-2.0.1.tgz"
-  integrity sha512-E0eIbrFWUhwfXJmsbdjRQFQPrl5pTEoKlz163j1mTqqUnU9PgR4AgB8AIITzuB3vLBdxZXyZ9TDIrwB2OASz4g==
 
 hyphenate-style-name@^1.0.3:
   version "1.1.0"
@@ -6089,11 +6006,6 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
-
-lucide-react@^0.453.0:
-  version "0.453.0"
-  resolved "https://registry.npmjs.org/lucide-react/-/lucide-react-0.453.0.tgz"
-  integrity sha512-kL+RGZCcJi9BvJtzg2kshO192Ddy9hv3ij+cPrVPWSRzgCWCVazoQJxOjAwgK53NomL07HB7GPHW120FimjNhQ==
 
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
@@ -7500,13 +7412,6 @@ recast@^0.21.0:
     esprima "~4.0.0"
     source-map "~0.6.1"
     tslib "^2.0.1"
-
-recoil@0.7.3:
-  version "0.7.3"
-  resolved "https://registry.npmjs.org/recoil/-/recoil-0.7.3.tgz"
-  integrity sha512-WaPppk3Hz5/V9nOVmu1X/o3cJyf/rLXw/YsEENvMzEDk+LKqMiGfFgZ3Gg51TKWccpCZCyrSBXn2O4L1E2WDPQ==
-  dependencies:
-    hamt_plus "1.0.2"
 
 recyclerlistview@4.2.1:
   version "4.2.1"
