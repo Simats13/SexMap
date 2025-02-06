@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useEffect } from "react";
 
 interface ErrorSnackbarProps {
-  message: string;
+  message: string | null;
   visible: boolean;
   onDismiss: () => void;
   type?: "error" | "success";
@@ -24,6 +24,12 @@ export const ErrorSnackbar = ({
     if (visible) {
       Animated.timing(opacity, {
         toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(opacity, {
+        toValue: 0,
         duration: 200,
         useNativeDriver: true,
       }).start();

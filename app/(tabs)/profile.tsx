@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, Pressable } from "react-native";
+import { Text, View, ScrollView, Pressable, Alert } from "react-native";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/atoms/Button";
 import { useRouter } from "expo-router";
@@ -43,7 +43,7 @@ const defaultStats: UserStats = {
 
 export default function Profile() {
   const { data: user, isLoading } = useAuth();
-  const { signOut, loading } = useAuthActions();
+  const { signOut, loading, deleteAccount } = useAuthActions();
   const { data: friends = [] } = useFriends(user?.uid);
   const { data: stats = defaultStats } = useUserStats(user?.uid) || {
     data: defaultStats,
@@ -83,7 +83,8 @@ export default function Profile() {
                 Crée ton profil
               </Text>
               <Text className="text-gray-600 text-center mb-4">
-                Rejoins la communauté et partage tes expériences en toute discrétion
+                Rejoins la communauté et partage tes expériences en toute
+                discrétion
               </Text>
             </View>
 
@@ -122,6 +123,21 @@ export default function Profile() {
       </ScrollView>
     );
   }
+
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Suppression du compte",
+      "Voulez-vous vraiment supprimer votre compte ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => deleteAccount(),
+        },
+      ]
+    );
+  };
 
   if (user) {
     return (
@@ -185,6 +201,14 @@ export default function Profile() {
                 onPress={handleShare}
                 variant="secondary"
                 icon="share"
+              />
+            </View>
+            <View className="mb-4">
+              <Button
+                title="Supprimer mon compte"
+                onPress={handleDeleteAccount}
+                loading={loading}
+                variant="primary"
               />
             </View>
             <View className="mb-4">

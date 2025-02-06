@@ -13,6 +13,7 @@ interface AuthTemplateProps {
   loading: boolean;
   error: string | null;
   onDismissError: () => void;
+  errorVisible: boolean;
 }
 
 export const AuthTemplate = ({
@@ -25,38 +26,42 @@ export const AuthTemplate = ({
   loading,
   error,
   onDismissError,
-}: AuthTemplateProps) => (
-  <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    className="flex-1 bg-white"
-  >
-    <Header title={isLogin ? "Connexion" : "Créer un compte"} />
-    <ScrollView
-      className="flex-1"
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: "flex-start",
-        paddingTop: 24,
-        paddingHorizontal: 24,
-      }}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
+  errorVisible,
+}: AuthTemplateProps) => {
+  console.log("error", !!error);
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 bg-white"
     >
-      <AuthForm
-        isLogin={isLogin}
-        form={form}
-        onFormChange={onFormChange}
-        onSubmit={onSubmit}
-        onToggleMode={onToggleMode}
-        loading={loading}
+      <Header title={isLogin ? "Connexion" : "Créer un compte"} />
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: "flex-start",
+          paddingTop: 24,
+          paddingHorizontal: 24,
+        }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <AuthForm
+          isLogin={isLogin}
+          form={form}
+          onFormChange={onFormChange}
+          onSubmit={onSubmit}
+          onToggleMode={onToggleMode}
+          loading={loading}
+        />
+      </ScrollView>
+      <ErrorSnackbar
+        message={error}
+        visible={errorVisible}
+        onDismiss={onDismissError}
+        type="error"
+        keyboardVisible={keyboardVisible}
       />
-    </ScrollView>
-    <ErrorSnackbar
-      message={error || ""}
-      visible={!!error}
-      onDismiss={onDismissError}
-      type="error"
-      keyboardVisible={keyboardVisible}
-    />
-  </KeyboardAvoidingView>
-);
+    </KeyboardAvoidingView>
+  );
+};

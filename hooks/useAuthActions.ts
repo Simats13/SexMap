@@ -7,9 +7,19 @@ import {
   updateProfile,
   fetchSignInMethodsForEmail,
   signOut as firebaseSignOut,
+  deleteUser,
 } from "firebase/auth";
 import { useRouter } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  setDoc,
+  where,
+  query,
+  getDocs,
+  getDoc,
+} from "firebase/firestore";
 import { useDeviceId } from "./useDeviceId";
 
 interface AuthForm {
@@ -22,6 +32,7 @@ interface AuthForm {
 export const useAuthActions = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorVisible, setErrorVisible] = useState(false);
   const router = useRouter();
   const { deviceId } = useDeviceId();
 
@@ -45,27 +56,38 @@ export const useAuthActions = () => {
     switch (error.code) {
       case "auth/passwords-not-match":
         setError("Les mots de passe ne correspondent pas");
+        setErrorVisible(true);
         break;
       case "auth/email-already-in-use":
         setError("Cette adresse email est déjà utilisée");
+        setErrorVisible(true);
         break;
       case "auth/invalid-email":
         setError("Adresse email invalide");
+        setErrorVisible(true);
         break;
       case "auth/weak-password":
         setError("Le mot de passe doit contenir au moins 6 caractères");
+        setErrorVisible(true);
         break;
       case "auth/wrong-password":
       case "auth/invalid-credential":
         setError("Email ou mot de passe incorrect");
+        setErrorVisible(true);
         break;
       case "auth/user-not-found":
         setError("Aucun compte associé à cette adresse email");
+        setErrorVisible(true);
         break;
       default:
         setError("Une erreur est survenue");
+        setErrorVisible(true);
         console.error(error);
     }
+    setTimeout(() => {
+      setError(null);
+      setErrorVisible(false);
+    }, 3000);
   };
 
   const signIn = async ({ email, password }: AuthForm) => {
@@ -76,6 +98,8 @@ export const useAuthActions = () => {
       router.back();
     } catch (error: any) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,6 +147,40 @@ export const useAuthActions = () => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      if (!auth.currentUser) {
+        throw new Error("User not found");
+      }
+      const mapsRef = collection(db, "maps");
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        if (userData?.linkId.includes(deviceId)) {
+          const mapsDocs = await getDocs(
+            query(
+              mapsRef,
+              where("linkId", "array-contains", deviceId || userData.linkId)
+            )
+          );
+          mapsDocs.forEach(async (document) => {
+            await deleteDoc(doc(db, "maps", document.id));
+          });
+        }
+      }
+
+      await deleteDoc(doc(db, "users", auth.currentUser.uid));
+      await deleteUser(auth.currentUser);
+      await firebaseSignOut(auth);
+      router.back();
+    } catch (error: any) {
+      handleError(error);
+    }
+  };
+
   const signOut = async () => {
     try {
       setLoading(true);
@@ -144,5 +202,7 @@ export const useAuthActions = () => {
     loading,
     error,
     clearError,
+    deleteAccount,
+    errorVisible
   };
 };

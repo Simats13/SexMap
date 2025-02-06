@@ -10,11 +10,7 @@
       "channel": "development",
       "android": {
         "gradleCommand": ":app:assembleDebug",
-        "buildType": "apk",
-        "env": {
-          "ANDROID_HOME": "/Users/$(whoami)/Library/Android/sdk",
-          "ANDROID_SDK_ROOT": "/Users/$(whoami)/Library/Android/sdk"
-        }
+        "buildType": "apk"
       }
     },
     "preview": {

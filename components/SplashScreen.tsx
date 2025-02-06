@@ -11,13 +11,8 @@ export default function CustomSplash() {
   const emojis = [
     "📍",
     "🗺️",
-    "🍑",
-    "🍆",
-    "💋",
-    "💦",
-    "🔥",
     "❤️",
-    "😈",
+    "🔥",
     "✨",
   ] as const;
   type Emoji = (typeof emojis)[number];
@@ -25,13 +20,8 @@ export default function CustomSplash() {
   const colors: Record<Emoji, string> = {
     "📍": "bg-rose-500",
     "🗺️": "bg-rose-500",
-    "🍑": "bg-rose-500",
-    "🍆": "bg-rose-500",
-    "💋": "bg-rose-500",
-    "💦": "bg-rose-500",
     "🔥": "bg-rose-500",
     "❤️": "bg-rose-500",
-    "😈": "bg-rose-500",
     "✨": "bg-rose-500",
   };
 

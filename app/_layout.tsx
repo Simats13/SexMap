@@ -1,14 +1,13 @@
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState, useCallback } from "react";
-import * as Linking from "expo-linking";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FilterProvider } from "@/contexts/FilterContext";
-import * as Notifications from 'expo-notifications';
-import { Platform, View, Alert } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import CustomSplash from '@/components/SplashScreen';
-import * as Updates from 'expo-updates';
+import * as Notifications from "expo-notifications";
+import { Platform, Alert } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import Animated, { FadeIn } from "react-native-reanimated";
+import CustomSplash from "@/components/SplashScreen";
+import * as Updates from "expo-updates";
 
 // Maintenir le splash screen visible pendant le chargement
 SplashScreen.preventAutoHideAsync();
@@ -51,17 +50,16 @@ export default function RootLayout() {
         }
 
         // Important: Attendre un moment avant de cacher le splash natif
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
         // Cacher le splash natif
         await SplashScreen.hideAsync().catch(console.warn);
-        
+
         setAppIsReady(true);
-        
+
         // Laisser le custom splash visible un moment
-        await new Promise(resolve => setTimeout(resolve, 2500));
+        await new Promise((resolve) => setTimeout(resolve, 2500));
         setShowCustomSplash(false);
-        
       } catch (e) {
         console.warn(e);
         setAppIsReady(true);
@@ -73,13 +71,14 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    const responseListener = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        if (response.notification.request.content.data?.type === "achievement") {
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        if (
+          response.notification.request.content.data?.type === "achievement"
+        ) {
           router.push("/success");
         }
-      }
-    );
+      });
 
     return () => {
       Notifications.removeNotificationSubscription(responseListener);
@@ -95,18 +94,21 @@ export default function RootLayout() {
       const update = await Updates.checkForUpdateAsync();
       if (update.isAvailable) {
         Alert.alert(
-          'Mise à jour disponible',
-          'Une nouvelle version est disponible. Voulez-vous mettre à jour maintenant ?',
+          "Mise à jour disponible",
+          "Une nouvelle version est disponible. Voulez-vous mettre à jour maintenant ?",
           [
-            { text: 'Plus tard', style: 'cancel' },
+            { text: "Plus tard", style: "cancel" },
             {
-              text: 'Mettre à jour',
+              text: "Mettre à jour",
               onPress: async () => {
                 try {
                   await Updates.fetchUpdateAsync();
                   await Updates.reloadAsync();
                 } catch (error) {
-                  Alert.alert('Erreur', 'Impossible de mettre à jour l\'application');
+                  Alert.alert(
+                    "Erreur",
+                    "Impossible de mettre à jour l'application"
+                  );
                 }
               },
             },
@@ -114,7 +116,7 @@ export default function RootLayout() {
         );
       }
     } catch (error) {
-      console.log('Erreur lors de la vérification des mises à jour:', error);
+      console.log("Erreur lors de la vérification des mises à jour:", error);
     }
   }
 
@@ -131,10 +133,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <FilterProvider>
-        <Animated.View 
-          style={{ flex: 1 }}
-          entering={FadeIn.duration(1000)}
-        >
+        <Animated.View style={{ flex: 1 }} entering={FadeIn.duration(1000)}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
@@ -164,7 +163,7 @@ export default function RootLayout() {
             <Stack.Screen
               name="modals/locationsList"
               options={{
-                presentation: 'modal',
+                presentation: "modal",
                 headerShown: false,
                 animation: "slide_from_bottom",
               }}
@@ -174,7 +173,7 @@ export default function RootLayout() {
               options={{
                 presentation: "modal",
                 headerShown: false,
-                animation: "slide_from_bottom", 
+                animation: "slide_from_bottom",
               }}
             />
             <Stack.Screen
