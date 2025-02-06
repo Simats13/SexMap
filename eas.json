@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 0.52.0"
+    "version": ">= 0.52.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -9,24 +10,26 @@
       "channel": "development",
       "android": {
         "gradleCommand": ":app:assembleDebug",
+        "buildType": "apk",
         "env": {
-          "JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
-          "ANDROID_HOME": "/Users/$USER/Library/Android/sdk"
+          "ANDROID_HOME": "/Users/$(whoami)/Library/Android/sdk",
+          "ANDROID_SDK_ROOT": "/Users/$(whoami)/Library/Android/sdk"
         }
       }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
       "channel": "production",
+      "distribution": "store",
       "android": {
-        "gradleCommand": ":app:assembleRelease",
-        "env": {
-          "JAVA_HOME": "/usr/lib/jvm/java-11-openjdk-amd64",
-          "ANDROID_HOME": "/Users/$USER/Library/Android/sdk"
-        }
+        "buildType": "app-bundle",
+        "gradleCommand": ":app:bundleRelease"
       }
     }
   },
