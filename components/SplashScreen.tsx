@@ -8,21 +8,13 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function CustomSplash() {
-  const emojis = [
-    "📍",
-    "🗺️",
-    "❤️",
-    "🔥",
-    "✨",
-  ] as const;
+  const emojis = ["📍", "🗺️", "❤️",] as const;
   type Emoji = (typeof emojis)[number];
 
   const colors: Record<Emoji, string> = {
     "📍": "bg-rose-500",
     "🗺️": "bg-rose-500",
-    "🔥": "bg-rose-500",
     "❤️": "bg-rose-500",
-    "✨": "bg-rose-500",
   };
 
   const selectedEmoji = emojis[Math.floor(Math.random() * emojis.length)];
