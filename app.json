@@ -19,7 +19,9 @@
       "bundleIdentifier": "com.lovemap.app",
       "associatedDomains": ["applinks:lovemap.app", "applinks:lovemap.app"],
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "LoveMap a besoin d'accéder à votre galerie photo pour vous permettre de sélectionner et partager des images.",
+        "NSPhotoLibraryAddUsageDescription": "LoveMap a besoin d'accéder à votre galerie photo pour sauvegarder des images."
       }
     },
     "android": {
