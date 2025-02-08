@@ -1,8 +1,8 @@
+import React from "react";
 import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { Header } from "../organisms/Header";
@@ -96,7 +96,8 @@ export const ShowSexTemplate = ({
             <View className="flex-row items-center mb-2">
               {pin.name && (
                 <Text className="text-sm font-semibold text-gray-800 mb-3">
-                  Le crime a été commis par {pin.name} {pin.locationName ? `à ${pin.locationName}` : ""}
+                  A été commis par {pin.name}{" "}
+                  {pin.locationName ? `à ${pin.locationName}` : ""}
                 </Text>
               )}
             </View>
@@ -108,16 +109,13 @@ export const ShowSexTemplate = ({
             {pin.solo ? (
               <View className="flex-row items-center mb-2 mt-4">
                 <Text className="text-gray-600">✊</Text>
-                <Text className="text-gray-600 ml-2">
-                  Des petits plaisirs en solitaire, c'est pas mal ! Sortez les
-                  mouchoirs 🧻
-                </Text>
+                <Text className="text-gray-600 ml-2">Seul, c'est mieux !</Text>
               </View>
             ) : (
               <View className="flex-row items-center mb-2 mt-4">
                 <Text className="text-gray-600">👫</Text>
                 <Text className="text-gray-600 ml-2">
-                  Des petits plaisirs en compagnie, c'est encore mieux !
+                  Plusieurs, c'est mieux !
                 </Text>
               </View>
             )}

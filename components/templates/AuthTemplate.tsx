@@ -14,6 +14,8 @@ interface AuthTemplateProps {
   error: string | null;
   onDismissError: () => void;
   errorVisible: boolean;
+  eulaAccepted: boolean;
+  onEulaChange: (checked: boolean) => void;
 }
 
 export const AuthTemplate = ({
@@ -27,6 +29,8 @@ export const AuthTemplate = ({
   error,
   onDismissError,
   errorVisible,
+  eulaAccepted,
+  onEulaChange,
 }: AuthTemplateProps) => {
   console.log("error", !!error);
   return (
@@ -53,6 +57,8 @@ export const AuthTemplate = ({
           onSubmit={onSubmit}
           onToggleMode={onToggleMode}
           loading={loading}
+          eulaAccepted={eulaAccepted}
+          onEulaChange={onEulaChange}
         />
       </ScrollView>
       <ErrorSnackbar

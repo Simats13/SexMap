@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Input } from "../atoms/Input";
 import { PasswordInput } from "../molecules/PasswordInput";
 import { Button } from "../atoms/Button";
+import { EulaCheckbox } from "../molecules/EulaCheckbox";
 
 interface AuthFormProps {
   isLogin: boolean;
@@ -15,6 +16,8 @@ interface AuthFormProps {
   onSubmit: () => void;
   onToggleMode: () => void;
   loading: boolean;
+  eulaAccepted: boolean;
+  onEulaChange: (checked: boolean) => void;
 }
 
 export const AuthForm = ({
@@ -24,9 +27,14 @@ export const AuthForm = ({
   onSubmit,
   onToggleMode,
   loading,
+  eulaAccepted,
+  onEulaChange,
 }: AuthFormProps) => {
   const isPasswordMatch = isLogin || form.password === form.confirmPassword;
-  const isFormValid = form.email && form.password && (isLogin || (form.username && isPasswordMatch));
+  const isFormValid =
+    form.email &&
+    form.password &&
+    (isLogin || (form.username && isPasswordMatch && eulaAccepted));
 
   return (
     <View className="bg-white rounded-2xl p-6 mx-4 shadow-lg">
@@ -68,6 +76,10 @@ export const AuthForm = ({
           }
           placeholder="Confirmer le mot de passe"
         />
+      )}
+
+      {!isLogin && (
+        <EulaCheckbox checked={eulaAccepted} onCheck={onEulaChange} />
       )}
 
       <Button

@@ -1,5 +1,14 @@
+import React from "react";
 import { User } from "firebase/auth";
-import { ScrollView, View, Text, Switch, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Header } from "../organisms/Header";
 import { SelectButton } from "../molecules/SelectButton";
 import { DatePickerButton } from "../molecules/DatePickerButton";
@@ -114,11 +123,11 @@ export const AddSexTemplate = ({
   return (
     <View className="flex-1 bg-white">
       <Header title="Ajouter un LovePin" onClose={onClose} />
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView 
+        <ScrollView
           className="flex-1"
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -128,13 +137,13 @@ export const AddSexTemplate = ({
           <View className="p-4">
             <View className="mb-6">
               <Text className="text-gray-700 mb-2">
-                Sélectionne le lieu précis de tes ébats :
+                Sélectionne le lieu précis de tes dates :
               </Text>
               <LocationPicker onLocationChange={setLocation} />
             </View>
 
             <View className="mb-6">
-              <Text className="text-gray-700 mb-2">Type d'expérience :</Text>
+              <Text className="text-gray-700 mb-2">Type de date :</Text>
               <View className="flex-row space-x-4">
                 <TouchableOpacity
                   onPress={() => setIsSolo(true)}
@@ -147,7 +156,7 @@ export const AddSexTemplate = ({
                       isSolo ? "text-red-500" : "text-gray-700"
                     }`}
                   >
-                    Solo ✊
+                    Seul
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -161,7 +170,7 @@ export const AddSexTemplate = ({
                       !isSolo ? "text-red-500" : "text-gray-700"
                     }`}
                   >
-                     Plusieurs 🤝🏻
+                    Plusieurs
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -189,7 +198,7 @@ export const AddSexTemplate = ({
                         .filter((t) => t !== tag)
                     )
                   }
-                  placeholder="Ajouter un partenaire de crime ..."
+                  placeholder="Ajouter un partenaire"
                   filteredSuggestions={partnersFiltered}
                   icon="account"
                 />
@@ -227,7 +236,7 @@ export const AddSexTemplate = ({
 
             <View>
               <Text className="text-gray-700 mb-2">
-                Ajoute la date et l'heure du crime
+                Ajoute la date et l'heure
               </Text>
               <DatePickerButton
                 onPress={() => setShowDatePicker(true)}
@@ -254,7 +263,7 @@ export const AddSexTemplate = ({
             )}
             <View>
               <Text className="text-gray-700 mb-2">
-                Raconte une anecdote croustillante
+                Raconte comment ça s'est passé
               </Text>
               <Input
                 multiline
@@ -263,13 +272,13 @@ export const AddSexTemplate = ({
                 value={description}
                 onChangeText={setDescription}
                 placeholder="Description (optionnelle)"
-                style={{ 
+                style={{
                   height: 120,
                   marginBottom: 20,
-                  textAlignVertical: 'top',
+                  textAlignVertical: "top",
                   paddingTop: 10,
                   paddingHorizontal: 10,
-                  backgroundColor: '#fff'
+                  backgroundColor: "#fff",
                 }}
               />
             </View>

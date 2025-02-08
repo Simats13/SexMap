@@ -4,9 +4,11 @@ import { AuthTemplate } from "@/components/templates/AuthTemplate";
 import { useAuthActions } from "@/hooks/useAuthActions";
 
 export default function AuthModal() {
-  const { signIn, signUp, loading, error, clearError, errorVisible } = useAuthActions();
+  const { signIn, signUp, loading, error, clearError, errorVisible } =
+    useAuthActions();
   const [isLogin, setIsLogin] = useState(true);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [eulaAccepted, setEulaAccepted] = useState(false);
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -37,6 +39,9 @@ export default function AuthModal() {
       if (form.password !== form.confirmPassword) {
         return;
       }
+      if (!eulaAccepted) {
+        return;
+      }
       signUp({
         username: form.username,
         email: form.email,
@@ -60,12 +65,15 @@ export default function AuthModal() {
           password: "",
           confirmPassword: "",
         });
+        setEulaAccepted(false);
       }}
       keyboardVisible={keyboardVisible}
       loading={loading}
       error={error}
       onDismissError={clearError}
       errorVisible={errorVisible}
+      eulaAccepted={eulaAccepted}
+      onEulaChange={setEulaAccepted}
     />
   );
 }

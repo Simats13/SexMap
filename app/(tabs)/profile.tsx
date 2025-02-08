@@ -10,6 +10,7 @@ import { useFriends } from "@/hooks/useFriends";
 import { useUserStats } from "@/hooks/useUserStats";
 import { Share } from "react-native";
 import { UserStats } from "@/hooks/useUserStats";
+import * as WebBrowser from "expo-web-browser";
 
 // Ajout des types pour les statistiques
 type StatItemProps = {
@@ -39,6 +40,14 @@ const defaultStats: UserStats = {
   nightPins: 0,
   countries: 0,
   quickPins: 0,
+};
+
+const openWebLink = async (url: string) => {
+  try {
+    await WebBrowser.openBrowserAsync(url);
+  } catch (error) {
+    console.error("Erreur lors de l'ouverture du lien:", error);
+  }
 };
 
 export default function Profile() {
@@ -186,39 +195,106 @@ export default function Profile() {
           </View>
 
           {/* Actions */}
-          <View className="space-y-4">
-            <View className="mb-4">
-              <Button
-                title="Mes lieux favoris"
+          <View className="space-y-4 mb-6">
+            <View className="space-y-3">
+              <Pressable
                 onPress={() => router.push("/modals/locationsList")}
-                variant="secondary"
-                icon="heart"
-              />
-            </View>
-            <View className="mb-4">
-              <Button
-                title="Partager mon profil"
+                className="flex-row items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+              >
+                <View className="flex-row items-center space-x-3">
+                  <Ionicons name="heart-outline" size={20} color="#4B5563" />
+                  <Text className="text-gray-700 font-medium">
+                    Mes lieux favoris
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </Pressable>
+
+              <Pressable
                 onPress={handleShare}
-                variant="secondary"
-                icon="share"
-              />
+                className="flex-row items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+              >
+                <View className="flex-row items-center space-x-3">
+                  <Ionicons name="share-outline" size={20} color="#4B5563" />
+                  <Text className="text-gray-700 font-medium">
+                    Partager mon profil
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </Pressable>
+
+              <Pressable
+                onPress={() =>
+                  openWebLink("https://lovemap.simats.dev/contact")
+                }
+                className="flex-row items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+              >
+                <View className="flex-row items-center space-x-3">
+                  <Ionicons name="mail-outline" size={20} color="#4B5563" />
+                  <Text className="text-gray-700 font-medium">
+                    Nous contacter
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </Pressable>
+
+              <Pressable
+                onPress={() => openWebLink("https://lovemap.simats.dev/terms")}
+                className="flex-row items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+              >
+                <View className="flex-row items-center space-x-3">
+                  <Ionicons
+                    name="document-text-outline"
+                    size={20}
+                    color="#4B5563"
+                  />
+                  <Text className="text-gray-700 font-medium">CGU</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </Pressable>
+
+              <Pressable
+                onPress={() =>
+                  openWebLink("https://lovemap.simats.dev/privacy")
+                }
+                className="flex-row items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm"
+              >
+                <View className="flex-row items-center space-x-3">
+                  <Ionicons
+                    name="shield-checkmark-outline"
+                    size={20}
+                    color="#4B5563"
+                  />
+                  <Text className="text-gray-700 font-medium">
+                    Politique de confidentialité
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+              </Pressable>
             </View>
-            <View className="mb-4">
-              <Button
-                title="Supprimer mon compte"
+
+            {/* Section des boutons de déconnexion */}
+            <View className="space-y-3 mt-6">
+              <Pressable
                 onPress={handleDeleteAccount}
-                loading={loading}
-                variant="primary"
-              />
-            </View>
-            <View className="mb-4">
-              <Button
-                title="Se déconnecter"
+                className="flex-row items-center justify-center px-4 py-3 bg-red-50 border border-red-200 rounded-xl"
+              >
+                <Text className="text-red-600 font-medium">
+                  Supprimer mon compte
+                </Text>
+              </Pressable>
+
+              <Pressable
                 onPress={signOut}
-                loading={loading}
-                variant="primary"
-                icon="log-out"
-              />
+                className="flex-row items-center justify-center px-4 py-3 bg-gray-100 border border-gray-200 rounded-xl"
+              >
+                <View className="flex-row items-center space-x-2">
+                  <Ionicons name="log-out-outline" size={20} color="#4B5563" />
+                  <Text className="text-gray-700 font-medium">
+                    Se déconnecter
+                  </Text>
+                </View>
+              </Pressable>
             </View>
           </View>
         </View>
